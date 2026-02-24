@@ -1,201 +1,152 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-bold text-xl text-slate-800 tracking-tight">
-                <i class="fa-solid fa-rocket text-indigo-500 mr-2"></i>Gerenciar: {{ $event->titulo }}
-            </h2>
-            <a href="{{ route('dashboard') }}" class="text-sm font-bold text-slate-400 hover:text-slate-600">Voltar</a>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="flex items-center gap-4">
+                <a href="{{ route('dashboard') }}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 transition shadow-sm">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h2 class="font-black text-2xl text-slate-800 tracking-tight leading-none">
+                        {{ $event->titulo }}
+                    </h2>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+                        <i class="fa-solid fa-location-dot text-indigo-400 mr-1"></i> {{ $event->local }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button class="bg-white text-slate-600 border border-slate-200 px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition">
+                    <i class="fa-solid fa-pen-to-square mr-1"></i> Editar
+                </button>
+                <a href="{{ route('convidados.create', $event) }}" class="bg-indigo-600 text-white px-6 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i> Convidar
+                </a>
+            </div>
         </div>
     </x-slot>
 
-    <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8">
-        @if(session('sucesso'))
-            <div class="mb-6 p-4 bg-emerald-100 text-emerald-700 rounded-2xl font-bold shadow-sm">
-                {{ session('sucesso') }}
-            </div>
-        @endif
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
             
-            <div class="space-y-6">
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                    <h3 class="font-black text-slate-800 mb-6 flex items-center gap-2 text-lg">
-                        <i class="fa-solid fa-users text-indigo-500"></i> Convidados
-                    </h3>
-
-                    <div class="grid grid-cols-3 gap-3 mb-8">
-                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-center">
-                            <span class="block text-xl font-black text-slate-800">{{ $totalConvidados }}</span>
-                            <span class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Total</span>
-                        </div>
-                        <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-100 text-center">
-                            <span class="block text-xl font-black text-emerald-600">{{ $confirmados }}</span>
-                            <span class="text-[9px] uppercase font-bold text-emerald-400 tracking-wider">Confirmados</span>
-                        </div>
-                        <div class="bg-amber-50 p-3 rounded-2xl border border-amber-100 text-center">
-                            <span class="block text-xl font-black text-amber-600">{{ $pendentes }}</span>
-                            <span class="text-[9px] uppercase font-bold text-amber-400 tracking-wider">Pendentes</span>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-5">
+                    <div class="w-14 h-14 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-users"></i>
                     </div>
-                    
-                    <form action="{{ route('events.addGuest', $event) }}" method="POST" class="flex gap-2 mb-8">
-                        @csrf
-                        <input type="text" name="nome" placeholder="Nome do parente/amigo" class="flex-1 rounded-xl border-slate-200 text-sm focus:ring-indigo-500" required>
-                        <button class="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
-                            +
-                        </button>
-                    </form>
+                    <div>
+                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Total</p>
+                        <h4 class="text-2xl font-black text-slate-800">{{ $event->convidados->count() }}</h4>
+                    </div>
+                </div>
 
-                    <div class="space-y-3">
-                        @forelse ($event->convidados as $convidado)
-                            <div class="group flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 {{ $convidado->presenca == 'confirmado' ? 'border-l-4 border-l-emerald-400' : '' }}">
-                                <div>
-                                    <p class="font-bold text-slate-800 text-sm">{{ $convidado->nome }}</p>
-                                    <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md {{ $convidado->presenca == 'confirmado' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600' }}">
-                                        {{ $convidado->presenca }}
-                                    </span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="copyLink('{{ route('convite.vip', $convidado->token_acesso) }}')" class="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
-                                        <i class="fa-solid fa-share-nodes"></i>
-                                    </button>
-                                    
-                                    <form action="{{ route('guests.destroy', $convidado) }}" method="POST" onsubmit="return confirm('Remover {{ $convidado->nome }} da lista?')">
-                                        @csrf @method('DELETE')
-                                        <button class="p-2 text-slate-300 hover:text-red-500 transition opacity-0 group-hover:opacity-100">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        @empty
-                            <p class="text-center text-slate-400 text-sm italic py-4">Nenhum convidado na lista.</p>
-                        @endforelse
+                <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-5">
+                    <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-check-double"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Confirmados</p>
+                        <h4 class="text-2xl font-black text-emerald-600">
+                            {{ $event->convidados->where('confirmado', true)->count() }}
+                        </h4>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-5">
+                    <div class="w-14 h-14 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Pendentes</p>
+                        <h4 class="text-2xl font-black text-amber-600">
+                            {{ $event->convidados->where('confirmado', false)->count() }}
+                        </h4>
                     </div>
                 </div>
             </div>
 
-            <div class="space-y-6">
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-black text-slate-800 flex items-center gap-2 text-lg">
-                            <i class="fa-solid fa-list-check text-indigo-500"></i> O que levar?
-                        </h3>
-                        <a href="{{ route('events.export', $event) }}" class="text-[10px] font-black bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-xl hover:bg-emerald-600 hover:text-white transition uppercase flex items-center gap-1 border border-emerald-100 shadow-sm">
-                            <i class="fa-solid fa-file-export"></i> Gerar Lista
-                        </a>
+            <div class="bg-white rounded-[3rem] border border-slate-100 shadow-sm overflow-hidden">
+                <div class="p-8 border-b border-slate-50 flex justify-between items-center bg-white">
+                    <h3 class="font-black text-lg text-slate-800 uppercase tracking-tighter">Lista de Convidados</h3>
+                    <div class="flex gap-2">
+                         <button onclick="window.print()" class="text-slate-400 hover:text-indigo-600 transition text-sm font-bold uppercase tracking-widest">
+                            <i class="fa-solid fa-print"></i> Imprimir
+                         </button>
                     </div>
+                </div>
 
-                    @if(session('lista_texto'))
-                        <div class="mb-6 p-5 bg-slate-900 rounded-[1.5rem] relative border border-slate-700 shadow-xl">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">WhatsApp Ready</span>
-                                <button onclick="copyListaToClipboard()" class="text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded-lg text-[10px] font-black uppercase transition-all">
-                                    Copiar Texto
-                                </button>
-                            </div>
-                            <pre id="listaTexto" class="text-emerald-400 text-[11px] whitespace-pre-wrap font-mono leading-relaxed">{{ session('lista_texto') }}</pre>
-                        </div>
-                    @endif
-
-                    <form action="{{ route('events.addItem', $event) }}" method="POST" class="grid grid-cols-3 gap-2 mb-8">
-                        @csrf
-                        <input type="text" name="nome" placeholder="Item" class="col-span-1 rounded-xl border-slate-200 text-sm focus:ring-indigo-500" required>
-                        <input type="text" name="quantidade" placeholder="Qtd" class="col-span-1 rounded-xl border-slate-200 text-sm focus:ring-indigo-500">
-                        <button class="bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition shadow-lg text-sm">
-                            Adicionar
-                        </button>
-                    </form>
-
-                    <div class="space-y-3">
-                        @forelse ($event->itens as $item)
-                            <div class="group flex items-center justify-between p-4 border border-slate-50 rounded-2xl bg-white shadow-sm hover:border-slate-200 transition-all">
-                                <div>
-                                    <p class="font-bold text-slate-800 text-sm">{{ $item->nome }}</p>
-                                    <p class="text-[10px] text-slate-400 font-medium uppercase">{{ $item->quantidade }}</p>
-                                </div>
-                                <div class="flex items-center gap-4">
-                                    <div class="text-right">
-                                        @if($item->convidado_id)
-                                            <span class="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md">
-                                                Leva: {{ $item->quemLeva->nome }}
-                                            </span>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50/50">
+                                <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome</th>
+                                <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                                <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            @forelse($event->convidados as $convidado)
+                                <tr class="hover:bg-slate-50/50 transition">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-black text-sm uppercase">
+                                                {{ substr($convidado->nome, 0, 1) }}
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-slate-700 leading-tight">{{ $convidado->nome }}</p>
+                                                <p class="text-[10px] text-slate-400 font-bold tracking-tight">
+                                                    {{ $convidado->telefone ?? 'Sem telefone' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        @if($convidado->confirmado)
+                                            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-widest">Confirmado</span>
                                         @else
-                                            <span class="text-[10px] font-bold text-slate-300 italic uppercase">Disponível</span>
+                                            <span class="px-3 py-1 bg-slate-100 text-slate-400 rounded-full text-[10px] font-black uppercase tracking-widest">Pendente</span>
                                         @endif
-                                    </div>
-                                    <form action="{{ route('items.destroy', $item) }}" method="POST" onsubmit="return confirm('Excluir item?')">
-                                        @csrf @method('DELETE')
-                                        <button class="text-slate-300 hover:text-red-500 transition opacity-0 group-hover:opacity-100">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        @empty
-                            <p class="text-center text-slate-400 text-sm italic py-4">Nenhum item cadastrado.</p>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <div class="flex justify-end gap-3 items-center">
+                                            
+                                            @if($convidado->telefone)
+                                                <a href="https://wa.me/{{ preg_replace('/\D/', '', $convidado->telefone) }}?text={{ urlencode('Olá ' . explode(' ', $convidado->nome)[0] . '! 🚀' . PHP_EOL . 'Aqui está seu convite para o evento: ' . $event->titulo . '.' . PHP_EOL . 'Confirme sua presença pelo link:' . PHP_EOL . route('convite.publico', $convidado->id)) }}" 
+                                                   target="_blank"
+                                                   class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all border border-emerald-100 group">
+                                                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                                                    <span class="text-[10px] font-black uppercase tracking-widest">Enviar</span>
+                                                </a>
+                                            @endif
 
-            <div class="lg:col-span-2 mt-4">
-                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                    <h3 class="font-black text-slate-800 mb-6 flex items-center gap-2 text-lg">
-                        <i class="fa-solid fa-camera-retro text-indigo-500"></i> Álbum de Fotos
-                    </h3>
+                                            <form action="{{ route('convidados.update', [$event, $convidado]) }}" method="POST" class="inline">
+                                                @csrf @method('PATCH')
+                                                <button type="submit" class="p-2 text-slate-300 hover:text-indigo-600 transition" title="Alternar Presença">
+                                                    <i class="fa-solid fa-arrows-rotate"></i>
+                                                </button>
+                                            </form>
 
-                    <form action="{{ route('events.uploadFotos', $event) }}" method="POST" enctype="multipart/form-data" class="mb-8 p-10 border-2 border-dashed border-slate-100 rounded-[2rem] bg-slate-50/50 text-center">
-                        @csrf
-                        <div class="max-w-xs mx-auto">
-                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-300 mb-4"></i>
-                            <input type="file" name="fotos[]" multiple class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
-                            <p class="mt-3 text-[10px] text-slate-400 font-bold uppercase tracking-wider">Formatos: JPG, PNG (Máx 5MB)</p>
-                            <button type="submit" class="mt-6 w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
-                                Enviar para o Álbum
-                            </button>
-                        </div>
-                    </form>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        @forelse($event->fotos as $foto)
-                            <div class="aspect-square rounded-2xl overflow-hidden shadow-sm border border-slate-100 group relative">
-                                <img src="{{ asset('storage/' . $foto->caminho) }}" class="w-full h-full object-cover">
-                                
-                                <form action="{{ route('fotos.destroy', $foto) }}" method="POST" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition shadow-lg" onsubmit="return confirm('Remover esta foto?')">
-                                    @csrf @method('DELETE')
-                                    <button class="bg-white/90 p-2 rounded-lg text-red-500 hover:bg-red-500 hover:text-white transition">
-                                        <i class="fa-solid fa-trash-can text-xs"></i>
-                                    </button>
-                                </form>
-
-                                <div class="absolute inset-0 bg-indigo-600/10 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center pointer-events-none">
-                                    <i class="fa-solid fa-eye text-white text-xl"></i>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="col-span-full py-12 text-center">
-                                <p class="text-slate-400 text-sm italic font-medium">O álbum ainda está vazio.</p>
-                            </div>
-                        @endforelse
-                    </div>
+                                            <form action="{{ route('convidados.destroy', [$event, $convidado]) }}" method="POST" class="inline" onsubmit="return confirm('Excluir este convidado?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="p-2 text-slate-300 hover:text-rose-500 transition">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="px-8 py-12 text-center text-slate-400 font-medium italic bg-slate-50/30">
+                                        Nenhum convidado na lista ainda. <br>
+                                        <a href="{{ route('convidados.create', $event) }}" class="text-indigo-600 font-black uppercase text-[10px] tracking-widest mt-2 inline-block hover:underline">Adicionar Primeiro Convidado</a>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        function copyLink(link) {
-            const urlCompleta = window.location.origin + link;
-            navigator.clipboard.writeText(urlCompleta);
-            alert('Link do convidado copiado!');
-        }
-
-        function copyListaToClipboard() {
-            const text = document.getElementById('listaTexto').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Lista copiada!');
-            });
-        }
-    </script>
 </x-app-layout>

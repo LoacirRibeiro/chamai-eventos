@@ -12,7 +12,8 @@ class Convidado extends Model
     protected $fillable = [
         'event_id',
         'nome',
-        'contato',
+        'e_mail',
+        'telefone',
         'token_acesso',
         'presenca'
     ];
@@ -21,7 +22,7 @@ class Convidado extends Model
     protected static function booted()
     {
         static::creating(function ($convidado) {
-            $convidado->token_acesso = Str::random(40);
+            $convidado->token_acesso = bin2hex(random_bytes(8));
         });
     }
 

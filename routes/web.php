@@ -62,4 +62,10 @@ Route::delete('/itens/{item}', [App\Http\Controllers\EventController::class, 're
 // Deletar uma foto
 Route::delete('/fotos/{foto}', [App\Http\Controllers\EventController::class, 'removeFoto'])->name('fotos.destroy');
 
+// Rota para o convidado abrir o convite
+Route::get('/convite/{id}', [App\Http\Controllers\ConvidadoController::class, 'showPublic'])->name('convite.publico');
+
+// Rota para o convidado clicar no botão de confirmar
+Route::post('/convite/{id}/confirmar', [App\Http\Controllers\ConvidadoController::class, 'confirmarPublico'])->name('convite.confirmar');
+
 require __DIR__.'/auth.php';

@@ -51,5 +51,38 @@ class ConvidadoController extends Controller
         return back()->with('sucesso', 'Obrigado por colaborar!');
     }
 
-    
+    public function showPublic($id)
+    {
+        $convidado = Convidado::findOrFail($id);
+        $event = $convidado->event; // Certifique-se de que a relação 'event' existe no model Convidado
+
+        return view('convidados.public_show', compact('convidado', 'event'));
+    }
+
+    public function confirmarPublico($id)
+    {
+        $convidado = Convidado::findOrFail($id);
+        $convidado->update(['confirmado' => true]);
+
+        return back()->with('status', 'Presença confirmada com sucesso!');
+    }
+
+    public function store(Request $request, Event $event)
+    {
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'telefone' => 'required|string', // Campo obrigatório para o Zap
+            'email' => 'nullable|email',
+        ]);
+
+        $event->convidados()->create([
+            'nome' => $request->nome,
+            'telefone' => $request->telefone,
+            'email' => $request->email,
+            'presenca' => 'pendente',
+        ]);
+
+        return redirect()->route('events.show', $event->id)
+            ->with('status', 'Convidado adicionado com sucesso!');
+    }
 }

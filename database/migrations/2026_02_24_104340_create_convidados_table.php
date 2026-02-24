@@ -10,20 +10,25 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('convidados', function (Blueprint $table) {
-        $table->id();
-        // Relacionamento com a tabela de eventos
-        $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-        
-        $table->string('nome');
-        $table->string('contato')->nullable(); // Pode ser Whats ou E-mail
-        $table->string('token_acesso')->unique(); // Para o link VIP
-        $table->enum('presenca', ['pendente', 'confirmado', 'recusado'])->default('pendente');
-        
-        $table->timestamps(); 
-    });
-}
+    {
+        Schema::create('convidados', function (Blueprint $table) {
+            $table->id();
+            
+            // Relacionamento com a tabela de eventos
+            $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
+            
+            $table->string('nome');
+            $table->string('e_mail')->nullable(); // Apenas e-mail agora
+            $table->string('telefone')->nullable(); // WhatsApp para o disparo
+            
+            // Adicionei o nullable() aqui para evitar erros de banco antes do Model gerar o token
+            $table->string('token_acesso')->unique()->nullable(); 
+            
+            $table->enum('presenca', ['pendente', 'confirmado', 'recusado'])->default('pendente');
+            
+            $table->timestamps(); 
+        });
+    }
 
     /**
      * Reverse the migrations.

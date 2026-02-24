@@ -48,16 +48,25 @@
 
                     <div class="space-y-3">
                         @forelse ($event->convidados as $convidado)
-                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 {{ $convidado->presenca == 'confirmado' ? 'border-l-4 border-l-emerald-400' : '' }}">
+                            <div class="group flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 {{ $convidado->presenca == 'confirmado' ? 'border-l-4 border-l-emerald-400' : '' }}">
                                 <div>
                                     <p class="font-bold text-slate-800 text-sm">{{ $convidado->nome }}</p>
                                     <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md {{ $convidado->presenca == 'confirmado' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600' }}">
                                         {{ $convidado->presenca }}
                                     </span>
                                 </div>
-                                <button onclick="copyLink('{{ route('convite.vip', $convidado->token_acesso) }}')" class="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
-                                    <i class="fa-solid fa-share-nodes mr-1"></i> Link VIP
-                                </button>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="copyLink('{{ route('convite.vip', $convidado->token_acesso) }}')" class="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
+                                        <i class="fa-solid fa-share-nodes"></i>
+                                    </button>
+                                    
+                                    <form action="{{ route('guests.destroy', $convidado) }}" method="POST" onsubmit="return confirm('Remover {{ $convidado->nome }} da lista?')">
+                                        @csrf @method('DELETE')
+                                        <button class="p-2 text-slate-300 hover:text-red-500 transition opacity-0 group-hover:opacity-100">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         @empty
                             <p class="text-center text-slate-400 text-sm italic py-4">Nenhum convidado na lista.</p>
@@ -100,19 +109,27 @@
 
                     <div class="space-y-3">
                         @forelse ($event->itens as $item)
-                            <div class="flex items-center justify-between p-4 border border-slate-50 rounded-2xl bg-white shadow-sm">
+                            <div class="group flex items-center justify-between p-4 border border-slate-50 rounded-2xl bg-white shadow-sm hover:border-slate-200 transition-all">
                                 <div>
                                     <p class="font-bold text-slate-800 text-sm">{{ $item->nome }}</p>
                                     <p class="text-[10px] text-slate-400 font-medium uppercase">{{ $item->quantidade }}</p>
                                 </div>
-                                <div class="text-right">
-                                    @if($item->convidado_id)
-                                        <span class="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md">
-                                            Leva: {{ $item->quemLeva->nome }}
-                                        </span>
-                                    @else
-                                        <span class="text-[10px] font-bold text-slate-300 italic uppercase">Disponível</span>
-                                    @endif
+                                <div class="flex items-center gap-4">
+                                    <div class="text-right">
+                                        @if($item->convidado_id)
+                                            <span class="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md">
+                                                Leva: {{ $item->quemLeva->nome }}
+                                            </span>
+                                        @else
+                                            <span class="text-[10px] font-bold text-slate-300 italic uppercase">Disponível</span>
+                                        @endif
+                                    </div>
+                                    <form action="{{ route('items.destroy', $item) }}" method="POST" onsubmit="return confirm('Excluir item?')">
+                                        @csrf @method('DELETE')
+                                        <button class="text-slate-300 hover:text-red-500 transition opacity-0 group-hover:opacity-100">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         @empty
@@ -144,13 +161,21 @@
                         @forelse($event->fotos as $foto)
                             <div class="aspect-square rounded-2xl overflow-hidden shadow-sm border border-slate-100 group relative">
                                 <img src="{{ asset('storage/' . $foto->caminho) }}" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-indigo-600/20 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center pointer-events-none">
+                                
+                                <form action="{{ route('fotos.destroy', $foto) }}" method="POST" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition shadow-lg" onsubmit="return confirm('Remover esta foto?')">
+                                    @csrf @method('DELETE')
+                                    <button class="bg-white/90 p-2 rounded-lg text-red-500 hover:bg-red-500 hover:text-white transition">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </button>
+                                </form>
+
+                                <div class="absolute inset-0 bg-indigo-600/10 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center pointer-events-none">
                                     <i class="fa-solid fa-eye text-white text-xl"></i>
                                 </div>
                             </div>
                         @empty
                             <div class="col-span-full py-12 text-center">
-                                <p class="text-slate-400 text-sm italic font-medium">O álbum ainda está vazio. Suba as fotos da festa aqui!</p>
+                                <p class="text-slate-400 text-sm italic font-medium">O álbum ainda está vazio.</p>
                             </div>
                         @endforelse
                     </div>
@@ -163,13 +188,13 @@
         function copyLink(link) {
             const urlCompleta = window.location.origin + link;
             navigator.clipboard.writeText(urlCompleta);
-            alert('Link do convidado copiado! Mande para ele no WhatsApp.');
+            alert('Link do convidado copiado!');
         }
 
         function copyListaToClipboard() {
             const text = document.getElementById('listaTexto').innerText;
             navigator.clipboard.writeText(text).then(() => {
-                alert('Lista copiada! Basta colar no grupo do WhatsApp.');
+                alert('Lista copiada!');
             });
         }
     </script>

@@ -52,4 +52,13 @@ Route::post('/eventos/{event}/fotos', [App\Http\Controllers\EventController::cla
 // Rota para gerar o texto da lista para o organizador
 Route::get('/eventos/{event}/exportar', [App\Http\Controllers\EventController::class, 'exportarLista'])->name('events.export');
 
+// Deletar um convidado
+Route::delete('/convidados/{convidado}', [App\Http\Controllers\EventController::class, 'removeGuest'])->name('guests.destroy');
+
+// Deletar um item
+Route::delete('/itens/{item}', [App\Http\Controllers\EventController::class, 'removeItem'])->name('items.destroy');
+
+// Deletar uma foto
+Route::delete('/fotos/{foto}', [App\Http\Controllers\EventController::class, 'removeFoto'])->name('fotos.destroy');
+
 require __DIR__.'/auth.php';

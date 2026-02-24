@@ -109,4 +109,26 @@ class EventController extends Controller
         // Retorna para a página com o texto na sessão
         return back()->with('lista_texto', $texto);
     }
+
+    public function removeGuest(Convidado $convidado) 
+    {
+        $convidado->delete();
+        return back()->with('sucesso', 'Convidado removido!');
+        }
+
+        public function removeItem(Item $item) 
+        {
+            $item->delete();
+            return back()->with('sucesso', 'Item removido da lista!');
+        }
+
+        public function removeFoto(Foto $foto) {
+            // Apaga o arquivo físico
+            if (\Storage::disk('public')->exists($foto->caminho)) {
+                \Storage::disk('public')->delete($foto->caminho);
+            }
+            $foto->delete();
+            return back()->with('sucesso', 'Foto removida!');
+        }
+        
 }

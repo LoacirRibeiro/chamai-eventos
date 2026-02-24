@@ -53,11 +53,18 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
-        // O Laravel faz o "Route Model Binding", ou seja, ele já busca o $event pelo ID automaticamente.
-        // Carregamos os relacionamentos (convidados e itens) para a página.
-        $event->load(['convidados', 'itens.quemLeva']);
+        // Carrega convidados ordenados por presença (confirmado antes de pendente)
+        // e itens com seus respectivos responsáveis
+        $event->load(['convidados' => function($query) {
+            $query->orderBy('presenca', 'asc'); 
+        }, 'itens.quemLeva']);
 
-        return view('events.show', compact('event'));
+        // Estatísticas para os cards
+        $totalConvidados = $event->convidados->count();
+        $confirmados = $event->convidados->where('presenca', 'confirmado')->count();
+        $pendentes = $event->convidados->where('presenca', 'pendente')->count();
+
+        return view('events.show', compact('event', 'confirmados', 'pendentes', 'totalConvidados'));
     }
 
     public function uploadFotos(Request $request, Event $event)

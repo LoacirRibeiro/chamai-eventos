@@ -22,6 +22,21 @@
                     <h3 class="font-black text-slate-800 mb-6 flex items-center gap-2 text-lg">
                         <i class="fa-solid fa-users text-indigo-500"></i> Convidados
                     </h3>
+
+                    <div class="grid grid-cols-3 gap-3 mb-8">
+                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-center">
+                            <span class="block text-xl font-black text-slate-800">{{ $totalConvidados }}</span>
+                            <span class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Total</span>
+                        </div>
+                        <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-100 text-center">
+                            <span class="block text-xl font-black text-emerald-600">{{ $confirmados }}</span>
+                            <span class="text-[9px] uppercase font-bold text-emerald-400 tracking-wider">Confirmados</span>
+                        </div>
+                        <div class="bg-amber-50 p-3 rounded-2xl border border-amber-100 text-center">
+                            <span class="block text-xl font-black text-amber-600">{{ $pendentes }}</span>
+                            <span class="text-[9px] uppercase font-bold text-amber-400 tracking-wider">Pendentes</span>
+                        </div>
+                    </div>
                     
                     <form action="{{ route('events.addGuest', $event) }}" method="POST" class="flex gap-2 mb-8">
                         @csrf
@@ -33,7 +48,7 @@
 
                     <div class="space-y-3">
                         @forelse ($event->convidados as $convidado)
-                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 {{ $convidado->presenca == 'confirmado' ? 'border-l-4 border-l-emerald-400' : '' }}">
                                 <div>
                                     <p class="font-bold text-slate-800 text-sm">{{ $convidado->nome }}</p>
                                     <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md {{ $convidado->presenca == 'confirmado' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600' }}">
@@ -145,14 +160,12 @@
     </div>
 
     <script>
-        // Função para copiar link do convidado
         function copyLink(link) {
             const urlCompleta = window.location.origin + link;
             navigator.clipboard.writeText(urlCompleta);
             alert('Link do convidado copiado! Mande para ele no WhatsApp.');
         }
 
-        // Função para copiar lista de compras formatada
         function copyListaToClipboard() {
             const text = document.getElementById('listaTexto').innerText;
             navigator.clipboard.writeText(text).then(() => {

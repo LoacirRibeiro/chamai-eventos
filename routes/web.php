@@ -13,9 +13,10 @@ use App\Models\Event;
 
 Route::get('/dashboard', function () {
     // Busca os eventos do usuário logado, ordenados pela data mais próxima
-    $eventos = Event::where('user_id', auth()->id())
-                    ->orderBy('data_horario', 'asc')
-                    ->get();
+    $events = auth()->user()->events()
+        ->withCount('convidados') // Conta os convidados sem carregar a lista toda (mais rápido)
+        ->orderBy('data_horario', 'asc')
+        ->get();
 
     return view('dashboard', compact('eventos'));
 })->middleware(['auth', 'verified'])->name('dashboard');

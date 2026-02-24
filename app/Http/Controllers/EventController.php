@@ -81,4 +81,25 @@ class EventController extends Controller
 
         return back()->with('sucesso', 'Fotos enviadas com sucesso para o álbum!');
     }
+
+    public function exportarLista(Event $event)
+    {
+        // Carrega os itens e quem vai levar cada um
+        $event->load('itens.quemLeva');
+        
+        $texto = "📋 *LISTA DE COMPRAS: {$event->titulo}*\n";
+        $texto .= "📅 *Data:* " . \Carbon\Carbon::parse($event->data_horario)->format('d/m H:i') . "\n";
+        $texto .= "📍 *Local:* {$event->local}\n";
+        $texto .= "------------------------------\n\n";
+
+        foreach ($event->itens as $item) {
+            $status = $item->quemLeva ? "✅ *" . $item->quemLeva->nome . "*" : "❌ _Pendente_";
+            $texto .= "• {$item->nome} ({$item->quantidade}) - {$status}\n";
+        }
+
+        $texto .= "\n_Gerado pelo sistema Chamaí!_ 🚀";
+
+        // Retorna para a página com o texto na sessão
+        return back()->with('lista_texto', $texto);
+    }
 }

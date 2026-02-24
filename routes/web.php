@@ -49,4 +49,7 @@ Route::get('/eventos/{event}', [App\Http\Controllers\EventController::class, 'sh
 // Rota para o organizador subir fotos da festa
 Route::post('/eventos/{event}/fotos', [App\Http\Controllers\EventController::class, 'uploadFotos'])->name('events.uploadFotos');
 
+// Rota para gerar o texto da lista para o organizador
+Route::get('/eventos/{event}/exportar', [App\Http\Controllers\EventController::class, 'exportarLista'])->name('events.export');
+
 require __DIR__.'/auth.php';

@@ -53,14 +53,31 @@
 
             <div class="space-y-6">
                 <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-                    <h3 class="font-black text-slate-800 mb-6 flex items-center gap-2 text-lg">
-                        <i class="fa-solid fa-list-check text-indigo-500"></i> O que levar?
-                    </h3>
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-black text-slate-800 flex items-center gap-2 text-lg">
+                            <i class="fa-solid fa-list-check text-indigo-500"></i> O que levar?
+                        </h3>
+                        <a href="{{ route('events.export', $event) }}" class="text-[10px] font-black bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-xl hover:bg-emerald-600 hover:text-white transition uppercase flex items-center gap-1 border border-emerald-100 shadow-sm">
+                            <i class="fa-solid fa-file-export"></i> Gerar Lista
+                        </a>
+                    </div>
+
+                    @if(session('lista_texto'))
+                        <div class="mb-6 p-5 bg-slate-900 rounded-[1.5rem] relative border border-slate-700 shadow-xl">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">WhatsApp Ready</span>
+                                <button onclick="copyListaToClipboard()" class="text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded-lg text-[10px] font-black uppercase transition-all">
+                                    Copiar Texto
+                                </button>
+                            </div>
+                            <pre id="listaTexto" class="text-emerald-400 text-[11px] whitespace-pre-wrap font-mono leading-relaxed">{{ session('lista_texto') }}</pre>
+                        </div>
+                    @endif
 
                     <form action="{{ route('events.addItem', $event) }}" method="POST" class="grid grid-cols-3 gap-2 mb-8">
                         @csrf
-                        <input type="text" name="nome" placeholder="Item" class="col-span-1 rounded-xl border-slate-200 text-sm" required>
-                        <input type="text" name="quantidade" placeholder="Qtd" class="col-span-1 rounded-xl border-slate-200 text-sm">
+                        <input type="text" name="nome" placeholder="Item" class="col-span-1 rounded-xl border-slate-200 text-sm focus:ring-indigo-500" required>
+                        <input type="text" name="quantidade" placeholder="Qtd" class="col-span-1 rounded-xl border-slate-200 text-sm focus:ring-indigo-500">
                         <button class="bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition shadow-lg text-sm">
                             Adicionar
                         </button>
@@ -124,14 +141,23 @@
                     </div>
                 </div>
             </div>
-            </div>
+        </div>
     </div>
 
     <script>
+        // Função para copiar link do convidado
         function copyLink(link) {
             const urlCompleta = window.location.origin + link;
             navigator.clipboard.writeText(urlCompleta);
             alert('Link do convidado copiado! Mande para ele no WhatsApp.');
+        }
+
+        // Função para copiar lista de compras formatada
+        function copyListaToClipboard() {
+            const text = document.getElementById('listaTexto').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Lista copiada! Basta colar no grupo do WhatsApp.');
+            });
         }
     </script>
 </x-app-layout>

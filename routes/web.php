@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ConvidadoController;
+use App\Http\Controllers\ItemController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,7 +20,7 @@ Route::get('/dashboard', function () {
         ->orderBy('data_horario', 'asc')
         ->get();
 
-    return view('dashboard', compact('eventos'));
+    return view('dashboard', compact('events'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -29,6 +31,12 @@ Route::middleware('auth')->group(function () {
 
 // Rota para mostrar o formulário
 Route::get('/eventos/criar', [EventController::class, 'create'])->name('events.create')->middleware('auth');
+
+// Rota que o seu botão na linha 22 está procurando:
+    Route::get('/eventos/{event}/convidados/novo', [ConvidadoController::class, 'create'])->name('convidados.create');
+    
+    // Rota para salvar o convidado (POST)
+    Route::post('/eventos/{event}/convidados/salvar', [ConvidadoController::class, 'store'])->name('convidados.store');
 
 // Rota para salvar os dados no banco
 Route::post('/eventos', [EventController::class, 'store'])->name('events.store')->middleware('auth');
@@ -67,5 +75,17 @@ Route::get('/convite/{id}', [App\Http\Controllers\ConvidadoController::class, 's
 
 // Rota para o convidado clicar no botão de confirmar
 Route::post('/convite/{id}/confirmar', [App\Http\Controllers\ConvidadoController::class, 'confirmarPublico'])->name('convite.confirmar');
+
+Route::put('/convidados/{convidado}', [ConvidadoController::class, 'update'])->name('convidados.update');
+Route::match(['put', 'patch'], '/convidados/{convidado}', [ConvidadoController::class, 'update'])->name('convidados.update');
+Route::get('/convidados/{convidado}/edit', [ConvidadoController::class, 'edit'])->name('convidados.edit');
+Route::delete('/convidados/{convidado}', [ConvidadoController::class, 'destroy'])->name('convidados.destroy');
+
+
+Route::get('/eventos/{event}/itens', [ItemController::class, 'index'])->name('itens.index');
+Route::post('/eventos/{event}/itens', [ItemController::class, 'store'])->name('itens.store');
+Route::put('/itens/{item}/vincular', [ItemController::class, 'vincularConvidado'])->name('itens.vincular');
+Route::delete('/itens/{item}', [ItemController::class, 'destroy'])->name('itens.destroy');
+Route::put('/itens/{item}', [ItemController::class, 'update'])->name('itens.update');
 
 require __DIR__.'/auth.php';

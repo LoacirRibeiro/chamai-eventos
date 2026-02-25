@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Event; 
+use App\Models\Convidado;
 
 class ConvidadoController extends Controller
 {
@@ -64,7 +66,7 @@ class ConvidadoController extends Controller
         $convidado = Convidado::findOrFail($id);
         $convidado->update(['confirmado' => true]);
 
-        return back()->with('status', 'Presença confirmada com sucesso!');
+        return back()->with('success', 'Presença confirmada com sucesso!');
     }
 
     public function store(Request $request, Event $event)
@@ -82,7 +84,52 @@ class ConvidadoController extends Controller
             'presenca' => 'pendente',
         ]);
 
-        return redirect()->route('events.show', $event->id)
-            ->with('status', 'Convidado adicionado com sucesso!');
+       return redirect()->route('events.show', $event->id)
+            ->with('success', 'Convidado adicionado com sucesso!');
+    }
+
+    public function create(Event $event)
+    {
+        // Retorna a view 'resources/views/convidados/create.blade.php'
+        return view('convidados.create', compact('event'));
+    }
+
+    public function edit(Convidado $convidado)
+    {
+        // Retorna a view de edição passando o convidado
+        return view('convidados.edit', compact('convidado'));
+    }
+
+    public function update(Request $request, Convidado $convidado)
+    {
+        // Se a requisição contiver apenas o campo 'presenca', é a troca de status via SweetAlert
+        if ($request->has('presenca') && !$request->has('nome')) {
+            $convidado->update([
+                'presenca' => $request->presenca
+            ]);
+            
+            return back()->with('success', 'Status de ' . $convidado->nome . ' atualizado para ' . ucfirst($request->presenca));
+        }
+
+        // Lógica para a Edição Completa (Nome, Telefone, etc)
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'telefone' => 'required|string',
+        ]);
+
+        $convidado->update($request->all());
+
+        return redirect()->route('events.show', $convidado->event_id)
+                        ->with('success', 'Dados atualizados com sucesso!');
+    }
+
+    public function destroy(Convidado $convidado)
+    {
+        $eventId = $convidado->event_id; // Guarda o ID para voltar à página certa
+        //dd($convidado);
+        $convidado->delete();
+
+        return redirect()->route('events.show', $eventId)
+            ->with('success', 'Convidado removido com sucesso!');
     }
 }

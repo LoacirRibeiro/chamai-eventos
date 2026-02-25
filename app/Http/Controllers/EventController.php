@@ -55,9 +55,13 @@ class EventController extends Controller
     {
         // Carrega convidados ordenados por presença (confirmado antes de pendente)
         // e itens com seus respectivos responsáveis
+        // $event->load(['convidados' => function($query) {
+        //     $query->orderBy('presenca', 'asc'); 
+        // }, 'itens.quemLeva']);
+
         $event->load(['convidados' => function($query) {
-            $query->orderBy('presenca', 'asc'); 
-        }, 'itens.quemLeva']);
+        $query->orderBy('presenca', 'asc'); 
+        }]);
 
         // Estatísticas para os cards
         $totalConvidados = $event->convidados->count();

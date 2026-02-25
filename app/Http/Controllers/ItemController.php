@@ -96,4 +96,12 @@ class ItemController extends Controller
 
         return back()->with('success', 'Item atualizado com sucesso!');
     }
+
+    public function desvincular(Item $item)
+    {
+        // Opcional: verificar se o item realmente pertence ao convidado que está tentando desmarcar
+        $item->update(['convidado_id' => null]);
+
+        return back()->with('sucesso', 'Item liberado com sucesso! Você pode escolher outro.');
+    }
 }

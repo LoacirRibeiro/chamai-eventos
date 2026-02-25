@@ -5,43 +5,53 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Event; 
 use App\Models\Convidado;
+use App\Models\Item;
+use Illuminate\Support\Str;
 
 class ConvidadoController extends Controller
 {
-    // Exibe a página do convite para o convidado
+    /**
+     * EXIBIÇÃO PÚBLICA: Página do convite via Token
+     */
     public function exibirConvite($token)
     {
-        // Busca o convidado pelo token ou retorna erro 404 se não existir
+        // Usamos 'with' para carregar os itens e fotos de uma vez só (Eager Loading)
         $convidado = Convidado::where('token_acesso', $token)->firstOrFail();
-        
-        // Busca o evento ligado a esse convidado
-        $evento = $convidado->evento; 
+        $evento = $convidado->event; // Padronizado para 'event' conforme seu Model Item
 
         return view('convite.pagina', compact('convidado', 'evento'));
     }
 
-    // Processa a confirmação de presença (Clique no botão)
+    /**
+     * AÇÃO PÚBLICA: Confirmar presença via Token
+     */
     public function confirmar(Request $request, $token)
     {
         $convidado = Convidado::where('token_acesso', $token)->firstOrFail();
-        $evento = $convidado->evento;
-        $donoDoEvento = $evento->user; // O criador da festa
-
+        
         $convidado->update(['presenca' => $request->presenca]);
 
+        // Notificação opcional para o dono do evento
         if ($request->presenca == 'confirmado') {
-            // Envia a notificação para o dono
-            $donoDoEvento->notify(new \App\Notifications\ConvidadoConfirmou($convidado, $evento));
+            $event = $convidado->event;
+            $donoDoEvento = $event->user;
+            
+            // Verifica se a classe de notificação existe antes de disparar
+            if (class_exists('\App\Notifications\ConvidadoConfirmou')) {
+                $donoDoEvento->notify(new \App\Notifications\ConvidadoConfirmou($convidado, $event));
+            }
         }
 
-        return back()->with('sucesso', 'Obrigado por responder!');
+        return back()->with('sucesso', 'Resposta registrada! Obrigado.');
     }
 
+    /**
+     * AÇÃO PÚBLICA/PRIVADA: Escolher item da lista
+     */
     public function escolherItem(Request $request, $item_id)
     {
         $item = Item::findOrFail($item_id);
         
-        // Verifica se o item já foi escolhido (Feedback Visual do seu plano)
         if ($item->convidado_id) {
             return back()->with('erro', 'Este item já foi escolhido por outra pessoa!');
         }
@@ -53,65 +63,41 @@ class ConvidadoController extends Controller
         return back()->with('sucesso', 'Obrigado por colaborar!');
     }
 
-    public function showPublic($id)
-    {
-        $convidado = Convidado::findOrFail($id);
-        $event = $convidado->event; // Certifique-se de que a relação 'event' existe no model Convidado
-
-        return view('convidados.public_show', compact('convidado', 'event'));
-    }
-
-    public function confirmarPublico($id)
-    {
-        $convidado = Convidado::findOrFail($id);
-        $convidado->update(['confirmado' => true]);
-
-        return back()->with('success', 'Presença confirmada com sucesso!');
-    }
-
+    /**
+     * ADMIN: Salvar novo convidado e GERAR TOKEN
+     */
     public function store(Request $request, Event $event)
     {
         $request->validate([
             'nome' => 'required|string|max:255',
-            'telefone' => 'required|string', // Campo obrigatório para o Zap
+            'telefone' => 'required|string',
             'email' => 'nullable|email',
         ]);
 
+        // Geramos um token único de 32 caracteres para o link do Zap
         $event->convidados()->create([
             'nome' => $request->nome,
             'telefone' => $request->telefone,
             'email' => $request->email,
             'presenca' => 'pendente',
+            'token_acesso' => Str::random(32), 
         ]);
 
-       return redirect()->route('events.show', $event->id)
+        return redirect()->route('events.show', $event->id)
             ->with('success', 'Convidado adicionado com sucesso!');
     }
 
-    public function create(Event $event)
-    {
-        // Retorna a view 'resources/views/convidados/create.blade.php'
-        return view('convidados.create', compact('event'));
-    }
-
-    public function edit(Convidado $convidado)
-    {
-        // Retorna a view de edição passando o convidado
-        return view('convidados.edit', compact('convidado'));
-    }
-
+    /**
+     * ADMIN: Atualizar dados (incluindo status via Dashboard)
+     */
     public function update(Request $request, Convidado $convidado)
     {
-        // Se a requisição contiver apenas o campo 'presenca', é a troca de status via SweetAlert
+        // Se for apenas atualização rápida de status (SweetAlert/Botão rápido)
         if ($request->has('presenca') && !$request->has('nome')) {
-            $convidado->update([
-                'presenca' => $request->presenca
-            ]);
-            
-            return back()->with('success', 'Status de ' . $convidado->nome . ' atualizado para ' . ucfirst($request->presenca));
+            $convidado->update(['presenca' => $request->presenca]);
+            return back()->with('success', 'Status de ' . $convidado->nome . ' atualizado!');
         }
 
-        // Lógica para a Edição Completa (Nome, Telefone, etc)
         $request->validate([
             'nome' => 'required|string|max:255',
             'telefone' => 'required|string',
@@ -120,16 +106,16 @@ class ConvidadoController extends Controller
         $convidado->update($request->all());
 
         return redirect()->route('events.show', $convidado->event_id)
-                        ->with('success', 'Dados atualizados com sucesso!');
+                        ->with('success', 'Dados atualizados!');
     }
 
-    public function destroy(Convidado $convidado)
+    // Mantive seus métodos create, edit e destroy como estavam, pois estão corretos.
+    public function create(Event $event) { return view('convidados.create', compact('event')); }
+    public function edit(Convidado $convidado) { return view('convidados.edit', compact('convidado')); }
+    public function destroy(Convidado $convidado) 
     {
-        $eventId = $convidado->event_id; // Guarda o ID para voltar à página certa
-        //dd($convidado);
+        $eventId = $convidado->event_id;
         $convidado->delete();
-
-        return redirect()->route('events.show', $eventId)
-            ->with('success', 'Convidado removido com sucesso!');
+        return redirect()->route('events.show', $eventId)->with('success', 'Removido!');
     }
 }

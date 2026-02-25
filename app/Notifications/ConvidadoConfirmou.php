@@ -3,9 +3,9 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Models\Convidado;
+use App\Models\Event;
 
 class ConvidadoConfirmou extends Notification
 {
@@ -13,37 +13,25 @@ class ConvidadoConfirmou extends Notification
 
     /**
      * Create a new notification instance.
+     * * Ao adicionar 'public' antes das variáveis, o PHP já as declara
+     * e atribui automaticamente para você.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        public Convidado $convidado, 
+        public Event $evento
+    ) {}
 
     /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
+     * Define onde a notificação será entregue.
      */
     public function via(object $notifiable): array
     {
-       return ['database']; // Salvar no banco para mostrar no painel
+        // Salva na tabela 'notifications' do seu banco de dados
+        return ['database']; 
     }
 
     /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
+     * Estrutura os dados que serão salvos no banco de dados.
      */
     public function toArray(object $notifiable): array
     {
@@ -51,6 +39,7 @@ class ConvidadoConfirmou extends Notification
             'mensagem' => "{$this->convidado->nome} confirmou presença no evento: {$this->evento->titulo}",
             'evento_id' => $this->evento->id,
             'link' => route('events.show', $this->evento->id),
+            'icone' => 'fa-user-check', // Opcional: para você usar um ícone no seu painel
         ];
     }
 }

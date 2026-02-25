@@ -68,6 +68,13 @@
                                 <i class="fa-solid fa-basket-shopping text-lg"></i>
                                 <span class="font-black text-sm uppercase tracking-tight">Itens da Festa</span>
                             </a>
+
+                            {{-- Galeria de Fotos --}}
+                            <a href="{{ route('events.galeria', $activeEvent) }}" 
+                                class="flex items-center gap-4 px-5 py-4 rounded-[1.25rem] transition-all {{ request()->routeIs('events.galeria') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600' }}">
+                                <i class="fa-solid fa-images text-lg"></i>
+                                <span class="font-black text-sm uppercase tracking-tight">Galeria</span>
+                            </a>
                         </div>
                     @endif
 

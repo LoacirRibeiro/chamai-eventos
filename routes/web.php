@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ConvidadoController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\FotoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -87,5 +88,16 @@ Route::post('/eventos/{event}/itens', [ItemController::class, 'store'])->name('i
 Route::put('/itens/{item}/vincular', [ItemController::class, 'vincularConvidado'])->name('itens.vincular');
 Route::delete('/itens/{item}', [ItemController::class, 'destroy'])->name('itens.destroy');
 Route::put('/itens/{item}', [ItemController::class, 'update'])->name('itens.update');
+
+Route::middleware(['auth'])->group(function () {
+    // Ver galeria
+    Route::get('/eventos/{event}/galeria', [FotoController::class, 'index'])->name('events.galeria');
+    
+    // Upload de fotos
+    Route::post('/eventos/{event}/fotos', [FotoController::class, 'store'])->name('fotos.store');
+    
+    // Deletar foto
+    Route::delete('/fotos/{foto}', [FotoController::class, 'destroy'])->name('fotos.destroy');
+});
 
 require __DIR__.'/auth.php';

@@ -3,12 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Foto extends Model
 {
     protected $fillable = ['event_id', 'caminho', 'legenda', 'user_id'];
 
-    public function evento() {
-        return $this->belongsTo(Event::class, 'event_id');
+    public function event(): BelongsTo
+    {
+        return $this->belongsTo(Event::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

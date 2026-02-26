@@ -75,6 +75,13 @@
                                 <i class="fa-solid fa-images text-lg"></i>
                                 <span class="font-black text-sm uppercase tracking-tight">Galeria</span>
                             </a>
+
+                            {{-- NOVO: Detalhes & Logs (Timeline) --}}
+                            <a href="{{ route('events.detalhes', $activeEvent) }}" 
+                                class="flex items-center gap-4 px-5 py-4 rounded-[1.25rem] transition-all {{ request()->routeIs('events.detalhes') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600' }}">
+                                <i class="fa-solid fa-chart-line text-lg"></i>
+                                <span class="font-black text-sm uppercase tracking-tight">Detalhes & Logs</span>
+                            </a>
                         </div>
                     @endif
 

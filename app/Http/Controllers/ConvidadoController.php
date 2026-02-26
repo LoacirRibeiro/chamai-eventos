@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Event; 
 use App\Models\Convidado;
 use App\Models\Item;
+use App\Models\Activity; // Importando o Model de Atividades
 use Illuminate\Support\Str;
 
 class ConvidadoController extends Controller
@@ -15,9 +16,8 @@ class ConvidadoController extends Controller
      */
     public function exibirConvite($token)
     {
-        // Usamos 'with' para carregar os itens e fotos de uma vez só (Eager Loading)
         $convidado = Convidado::where('token_acesso', $token)->firstOrFail();
-        $evento = $convidado->event; // Padronizado para 'event' conforme seu Model Item
+        $evento = $convidado->event; 
 
         return view('convite.pagina', compact('convidado', 'evento'));
     }
@@ -28,15 +28,20 @@ class ConvidadoController extends Controller
     public function confirmar(Request $request, $token)
     {
         $convidado = Convidado::where('token_acesso', $token)->firstOrFail();
+        $event = $convidado->event;
         
         $convidado->update(['presenca' => $request->presenca]);
 
-        // Notificação opcional para o dono do evento
+        // --- REGISTRO DE ATIVIDADE ---
+        $statusTexto = $request->presenca == 'confirmado' ? 'confirmou presença!' : 'avisou que não poderá ir.';
+        Activity::create([
+            'event_id' => $event->id,
+            'mensagem' => "{$convidado->nome} {$statusTexto}",
+            'tipo' => 'presenca'
+        ]);
+
         if ($request->presenca == 'confirmado') {
-            $event = $convidado->event;
             $donoDoEvento = $event->user;
-            
-            // Verifica se a classe de notificação existe antes de disparar
             if (class_exists('\App\Notifications\ConvidadoConfirmou')) {
                 $donoDoEvento->notify(new \App\Notifications\ConvidadoConfirmou($convidado, $event));
             }
@@ -60,6 +65,14 @@ class ConvidadoController extends Controller
             'convidado_id' => $request->convidado_id
         ]);
 
+        // --- REGISTRO DE ATIVIDADE ---
+        $convidado = Convidado::find($request->convidado_id);
+        Activity::create([
+            'event_id' => $item->event_id,
+            'mensagem' => "{$convidado->nome} escolheu levar: {$item->nome}",
+            'tipo' => 'item'
+        ]);
+
         return back()->with('sucesso', 'Obrigado por colaborar!');
     }
 
@@ -74,8 +87,7 @@ class ConvidadoController extends Controller
             'email' => 'nullable|email',
         ]);
 
-        // Geramos um token único de 32 caracteres para o link do Zap
-        $event->convidados()->create([
+        $convidado = $event->convidados()->create([
             'nome' => $request->nome,
             'telefone' => $request->telefone,
             'email' => $request->email,
@@ -83,18 +95,32 @@ class ConvidadoController extends Controller
             'token_acesso' => Str::random(32), 
         ]);
 
+        // --- REGISTRO DE ATIVIDADE (OPCIONAL) ---
+        Activity::create([
+            'event_id' => $event->id,
+            'mensagem' => "{$convidado->nome} foi adicionado à lista.",
+            'tipo' => 'presenca'
+        ]);
+
         return redirect()->route('events.show', $event->id)
             ->with('success', 'Convidado adicionado com sucesso!');
     }
 
     /**
-     * ADMIN: Atualizar dados (incluindo status via Dashboard)
+     * ADMIN: Atualizar dados
      */
     public function update(Request $request, Convidado $convidado)
     {
-        // Se for apenas atualização rápida de status (SweetAlert/Botão rápido)
         if ($request->has('presenca') && !$request->has('nome')) {
             $convidado->update(['presenca' => $request->presenca]);
+            
+            // Log de alteração manual pelo admin
+            Activity::create([
+                'event_id' => $convidado->event_id,
+                'mensagem' => "Status de {$convidado->nome} alterado para {$request->presenca}.",
+                'tipo' => 'presenca'
+            ]);
+
             return back()->with('success', 'Status de ' . $convidado->nome . ' atualizado!');
         }
 
@@ -109,13 +135,21 @@ class ConvidadoController extends Controller
                         ->with('success', 'Dados atualizados!');
     }
 
-    // Mantive seus métodos create, edit e destroy como estavam, pois estão corretos.
     public function create(Event $event) { return view('convidados.create', compact('event')); }
     public function edit(Convidado $convidado) { return view('convidados.edit', compact('convidado')); }
     public function destroy(Convidado $convidado) 
     {
         $eventId = $convidado->event_id;
+        $nome = $convidado->nome;
         $convidado->delete();
+
+        // Log de remoção
+        Activity::create([
+            'event_id' => $eventId,
+            'mensagem' => "{$nome} foi removido da lista.",
+            'tipo' => 'presenca'
+        ]);
+
         return redirect()->route('events.show', $eventId)->with('success', 'Removido!');
     }
 }

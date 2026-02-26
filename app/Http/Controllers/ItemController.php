@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Event;
 use App\Models\Convidado;
+use App\Models\Activity; // Importação necessária
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +20,6 @@ class ItemController extends Controller
             abort(403, 'Acesso não autorizado.');
         }
 
-        // Carrega itens e convidados com os dados da tabela pivô
         $event->load([
             'itens.convidados', 
             'convidados.itens'
@@ -40,7 +40,14 @@ class ItemController extends Controller
             'quantidade' => 'required|integer|min:1',
         ]);
 
-        $event->itens()->create($validated);
+        $item = $event->itens()->create($validated);
+
+        // --- REGISTRO DE ATIVIDADE ---
+        Activity::create([
+            'event_id' => $event->id,
+            'mensagem' => "Novo item adicionado à lista: {$item->quantidade}x {$item->nome}",
+            'tipo' => 'item'
+        ]);
 
         return back()->with('success', 'Item adicionado com sucesso!');
     }
@@ -55,18 +62,23 @@ class ItemController extends Controller
             'quantidade_levada' => 'required|integer|min:1'
         ]);
 
-        // 1. Soma quanto já foi reservado por todos os convidados para este item
         $jaReservado = $item->convidados()->sum('quantidade_levada'); 
         $disponivel = $item->quantidade - $jaReservado;
 
-        // 2. Valida se a quantidade escolhida ultrapassa o estoque
         if ($request->quantidade_levada > $disponivel) {
             return back()->with('error', "Desculpe, só restam {$disponivel} unidades de {$item->nome}.");
         }
 
-        // 3. Salva na tabela pivô usando o nome da coluna definido no Model
         $item->convidados()->attach($request->convidado_id, [
             'quantidade_levada' => $request->quantidade_levada
+        ]);
+
+        // --- REGISTRO DE ATIVIDADE ---
+        $convidado = Convidado::find($request->convidado_id);
+        Activity::create([
+            'event_id' => $item->event_id,
+            'mensagem' => "{$convidado->nome} reservou {$request->quantidade_levada}x {$item->nome}",
+            'tipo' => 'item'
         ]);
 
         return back()->with('success', "Sucesso! Você vai levar {$request->quantidade_levada} unidades de {$item->nome}.");
@@ -81,7 +93,15 @@ class ItemController extends Controller
             'convidado_id' => 'required|exists:convidados,id'
         ]);
 
-        // Remove a linha específica na tabela pivô
+        $convidado = Convidado::find($request->convidado_id);
+
+        // --- REGISTRO DE ATIVIDADE (Antes de deletar) ---
+        Activity::create([
+            'event_id' => $item->event_id,
+            'mensagem' => "{$convidado->nome} removeu a reserva de {$item->nome}",
+            'tipo' => 'item'
+        ]);
+
         $item->convidados()->detach($request->convidado_id);
 
         return back()->with('success', 'Reserva removida com sucesso!');
@@ -93,6 +113,17 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         if ($item->event->user_id !== Auth::id()) { abort(403); }
+        
+        $nomeItem = $item->nome;
+        $eventId = $item->event_id;
+
+        // --- REGISTRO DE ATIVIDADE ---
+        Activity::create([
+            'event_id' => $eventId,
+            'mensagem' => "O item '{$nomeItem}' foi removido da lista oficial.",
+            'tipo' => 'item'
+        ]);
+
         $item->delete();
         return back()->with('success', 'Item removido.');
     }

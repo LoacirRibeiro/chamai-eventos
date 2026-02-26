@@ -86,6 +86,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/eventos/{event}/fotos', 'store')->name('fotos.store');
         Route::delete('/fotos/{foto}', 'destroy')->name('fotos.destroy');
     });
+
+    //detalhes do evento
+    Route::get('/events/{event}/detalhes', [EventController::class, 'detalhes'])->name('events.detalhes');
 });
 
 require __DIR__.'/auth.php';

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center gap-4">
-            <a href="{{ route('events.show', $event->id) }}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 transition shadow-sm">
+            <a href="{{ route('events.show', $event->id) }}" class="w-10 h-10 flex items-center justify-center rounded-md bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 transition shadow-sm">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
             <h2 class="font-black text-2xl text-slate-800 tracking-tight">
@@ -12,10 +12,10 @@
 
     <div class="py-12">
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm rounded-[3rem] border border-slate-100">
+            <div class="bg-white overflow-hidden shadow-sm rounded-md border border-slate-100">
                 <div class="p-10">
                     <div class="flex items-center gap-4 mb-10">
-                        <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+                        <div class="w-12 h-12 bg-indigo-600 rounded-md flex items-center justify-center text-white shadow-lg shadow-indigo-100">
                             <i class="fa-solid fa-user-plus text-xl"></i>
                         </div>
                         <div>
@@ -34,7 +34,7 @@
                                     <i class="fa-solid fa-user"></i>
                                 </span>
                                 <input type="text" name="nome" placeholder="Ex: João Silva" required
-                                    class="block w-full pl-11 pr-4 py-4 rounded-2xl border-slate-200 focus:ring-indigo-500 focus:border-indigo-500 text-slate-700 font-bold">
+                                    class="block w-full pl-11 pr-4 py-4 rounded-md border-slate-200 focus:ring-indigo-500 focus:border-indigo-500 text-slate-700 font-bold">
                             </div>
                         </div>
 
@@ -45,7 +45,7 @@
                                     <i class="fa-brands fa-whatsapp text-lg"></i>
                                 </span>
                                 <input type="text" name="telefone" placeholder="Ex: 63992001122" required
-                                    class="block w-full pl-11 pr-4 py-4 rounded-2xl border-slate-200 focus:ring-emerald-500 focus:border-emerald-500 text-slate-700 font-bold">
+                                    class="block w-full pl-11 pr-4 py-4 rounded-md border-slate-200 focus:ring-emerald-500 focus:border-emerald-500 text-slate-700 font-bold">
                             </div>
                             <p class="mt-2 text-[10px] text-slate-400 font-medium ml-1">Digite apenas números com o DDD para o disparo automático funcionar.</p>
                         </div>
@@ -57,12 +57,12 @@
                                     <i class="fa-solid fa-envelope"></i>
                                 </span>
                                 <input type="email" name="e_mail" placeholder="email@exemplo.com"
-                                    class="block w-full pl-11 pr-4 py-4 rounded-2xl border-slate-200 focus:ring-indigo-500 focus:border-indigo-500 text-slate-700 font-bold">
+                                    class="block w-full pl-11 pr-4 py-4 rounded-md border-slate-200 focus:ring-indigo-500 focus:border-indigo-500 text-slate-700 font-bold">
                             </div>
                         </div>
 
                         <div class="pt-6">
-                            <button type="submit" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-700 transition shadow-xl shadow-indigo-100 flex items-center justify-center gap-2">
+                            <button type="submit" class="w-full bg-indigo-600 text-white py-4 rounded-md font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-plus"></i> Adicionar à Lista
                             </button>
                         </div>

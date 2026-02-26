@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Convidado extends Model
 {
@@ -29,5 +30,12 @@ class Convidado extends Model
     public function event() 
     {
     return $this->belongsTo(Event::class, 'event_id');
+    }
+
+    public function itens(): BelongsToMany
+    {
+        return $this->belongsToMany(Item::class, 'convidado_item')
+            ->withPivot('quantidade_levada') // Permite acessar o campo extra da migration
+            ->withTimestamps();
     }
 }

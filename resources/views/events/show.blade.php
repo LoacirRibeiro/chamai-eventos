@@ -137,20 +137,20 @@
                                             </a>
 
                                             {{-- AÇÃO: STATUS (Mudar Status) --}}
-                                            <button type="button" 
+                                            <!-- <button type="button" 
                                                     onclick="escolherStatus('{{ $convidado->id }}', '{{ $convidado->nome }}')" 
                                                     class="flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-600 rounded-md hover:bg-amber-600 hover:text-white transition-all border border-amber-100 cursor-pointer" 
                                                     title="Mudar Status">
                                                 <i class="fa-solid fa-arrows-rotate"></i>
                                                 <span class="text-[10px] font-black uppercase tracking-widest">Status</span>
-                                            </button>
+                                            </button> -->
 
-                                            {{-- Formulário Oculto para o Status --}}
+                                            <!-- {{-- Formulário Oculto para o Status --}}
                                             <form id="status-form-{{ $convidado->id }}" action="{{ route('convidados.update', $convidado) }}" method="POST" class="hidden">
                                                 @csrf 
                                                 @method('PUT')
                                                 <input type="hidden" name="presenca" id="status-input-{{ $convidado->id }}">
-                                            </form>
+                                            </form> -->
 
                                             {{-- AÇÃO: EXCLUIR --}}
                                             <button type="button" 

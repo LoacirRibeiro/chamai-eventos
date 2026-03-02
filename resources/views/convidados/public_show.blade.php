@@ -1,4 +1,4 @@
-<x-guest-layout>
+<!-- <x-guest-layout>
     <div class="text-center">
         <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-50 rotate-3">
             <i class="fa-solid fa-envelope-open-text text-3xl"></i>
@@ -58,4 +58,4 @@
             </form>
         @endif
     </div>
-</x-guest-layout>
+</x-guest-layout> -->

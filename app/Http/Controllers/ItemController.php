@@ -55,6 +55,7 @@ class ItemController extends Controller
     /**
      * VINCULAR: Convidado escolhe o item e a quantidade
      */
+
     public function vincularConvidado(Request $request, Item $item)
     {
         $request->validate([
@@ -62,26 +63,35 @@ class ItemController extends Controller
             'quantidade_levada' => 'required|integer|min:1'
         ]);
 
-        $jaReservado = $item->convidados()->sum('quantidade_levada'); 
-        $disponivel = $item->quantidade - $jaReservado;
+        // 1. Verificar reserva atual deste convidado para este item
+        $registroExistente = $item->convidados()->where('convidado_id', $request->convidado_id)->first();
+        $quantidadeJaReservadaPorEle = $registroExistente ? $registroExistente->pivot->quantidade_levada : 0;
 
-        if ($request->quantidade_levada > $disponivel) {
-            return back()->with('error', "Desculpe, só restam {$disponivel} unidades de {$item->nome}.");
+        // 2. Cálculo inteligente de estoque:
+        // (Total do Item) - (Tudo que já foi prometido) + (O que esse convidado já tinha prometido)
+        $totalPrometidoGeral = $item->convidados()->sum('quantidade_levada');
+        $disponivelParaEle = $item->quantidade - $totalPrometidoGeral + $quantidadeJaReservadaPorEle;
+
+        if ($request->quantidade_levada > $disponivelParaEle) {
+            return back()->with('error', "Desculpe, só restam {$disponivelParaEle} unidades de {$item->nome}.");
         }
 
-        $item->convidados()->attach($request->convidado_id, [
-            'quantidade_levada' => $request->quantidade_levada
+        // 3. Atualizar ou Criar o vínculo (Substitui a quantidade anterior)
+        $item->convidados()->syncWithoutDetaching([
+            $request->convidado_id => ['quantidade_levada' => $request->quantidade_levada]
         ]);
 
-        // --- REGISTRO DE ATIVIDADE ---
+        // 4. Registro de Atividade com mensagem dinâmica
         $convidado = Convidado::find($request->convidado_id);
+        $acao = $registroExistente ? "alterou para" : "reservou";
+        
         Activity::create([
             'event_id' => $item->event_id,
-            'mensagem' => "{$convidado->nome} reservou {$request->quantidade_levada}x {$item->nome}",
+            'mensagem' => "{$convidado->nome} {$acao} {$request->quantidade_levada}x {$item->nome}",
             'tipo' => 'item'
         ]);
 
-        return back()->with('success', "Sucesso! Você vai levar {$request->quantidade_levada} unidades de {$item->nome}.");
+        return back()->with('success', "Sucesso! Você vai levar {$request->quantidade_levada}x {$item->nome}.");
     }
 
     /**
@@ -126,5 +136,15 @@ class ItemController extends Controller
 
         $item->delete();
         return back()->with('success', 'Item removido.');
+    }
+
+    // No arquivo App\Models\Item.php
+
+    public function convidados()
+    {
+        // O withPivot é crucial para o Laravel ler a coluna extra na tabela de ligação
+        return $this->belongsToMany(Convidado::class, 'convidado_item')
+                    ->withPivot('quantidade_levada')
+                    ->withTimestamps();
     }
 }

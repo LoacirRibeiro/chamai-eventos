@@ -4,7 +4,7 @@
         {{-- Header ajustado para ultra-responsividade --}}
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-1">
             <div class="flex items-center gap-3 w-full">
-                <a href="{{ route('dashboard') }}" class="w-8 h-8 flex shrink-0 items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 shadow-sm">
+                <a href="{{ route('dashboard') }}" class="w-8 h-8 flex shrink-0 items-center justify-center rounded-md bg-white border border-slate-200 text-slate-400 shadow-sm">
                     <i class="fa-solid fa-arrow-left text-xs"></i>
                 </a>
                 <div class="min-w-0">
@@ -19,10 +19,10 @@
 
             {{-- Botões lado a lado mesmo no mobile pequeno --}}
             <div class="flex gap-2 w-full sm:w-auto">
-                <a href="{{ route('convidados.create', $event) }}" class="flex-1 sm:flex-none justify-center bg-indigo-600 text-white px-3 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-indigo-700 flex items-center gap-2">
+                <a href="{{ route('convidados.create', $event) }}" class="flex-1 sm:flex-none justify-center bg-indigo-600 text-white px-3 py-2 rounded-md font-black text-[9px] uppercase tracking-widest hover:bg-indigo-700 flex items-center gap-2">
                     <i class="fa-solid fa-user-plus"></i> Convidar
                 </a>
-                <a href="{{ route('dashboard') }}" class="flex-1 sm:flex-none justify-center bg-slate-100 text-slate-500 px-3 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-slate-200 flex items-center gap-2">
+                <a href="{{ route('dashboard') }}" class="flex-1 sm:flex-none justify-center bg-slate-100 text-slate-500 px-3 py-2 rounded-md font-black text-[9px] uppercase tracking-widest hover:bg-slate-200 flex items-center gap-2">
                     <i class="fa-solid fa-house"></i> Início
                 </a>
             </div>
@@ -36,8 +36,8 @@
             
             {{-- Cards de Resumo: Grid 1 coluna no mobile e 3 colunas acima de 640px --}}
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
-                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
-                    <div class="w-10 h-10 bg-slate-50 text-slate-400 rounded-lg flex items-center justify-center shrink-0">
+                <div class="bg-white p-4 rounded-md border border-slate-100 shadow-sm flex items-center gap-4">
+                    <div class="w-10 h-10 bg-slate-50 text-slate-400 rounded-md flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-users text-sm"></i>
                     </div>
                     <div>
@@ -46,8 +46,8 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
-                    <div class="w-10 h-10 bg-emerald-50 text-emerald-500 rounded-lg flex items-center justify-center shrink-0">
+                <div class="bg-white p-4 rounded-md border border-slate-100 shadow-sm flex items-center gap-4">
+                    <div class="w-10 h-10 bg-emerald-50 text-emerald-500 rounded-md flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-check text-sm"></i>
                     </div>
                     <div>
@@ -56,8 +56,8 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
-                    <div class="w-10 h-10 bg-amber-50 text-amber-500 rounded-lg flex items-center justify-center shrink-0">
+                <div class="bg-white p-4 rounded-md border border-slate-100 shadow-sm flex items-center gap-4">
+                    <div class="w-10 h-10 bg-amber-50 text-amber-500 rounded-md flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-clock text-sm"></i>
                     </div>
                     <div>
@@ -68,7 +68,7 @@
             </div>
 
             {{-- Container da Tabela --}}
-            <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+            <div class="bg-white rounded-md border border-slate-100 shadow-sm overflow-hidden">
                 <div class="p-4 md:p-8 border-b border-slate-50 flex justify-between items-center bg-white">
                     <h3 class="font-black text-xs md:text-lg text-slate-800 uppercase">Lista</h3>
                     <button onclick="window.print()" class="text-slate-400 text-[9px] font-bold uppercase tracking-widest">
@@ -76,7 +76,7 @@
                     </button>
                 </div>
 
-                {{-- Tabela: O pulo do gato está no 'w-full overflow-x-auto' e no 'inline-block min-w-full' --}}
+                {{-- Tabela: Lista' --}}
                 <div class="w-full overflow-x-auto">
                     <div class="inline-block min-w-full align-middle">
                         <table class="min-w-full divide-y divide-slate-100">
@@ -111,16 +111,16 @@
                                             <div class="flex justify-end gap-1">
                                                 {{-- WhatsApp Compacto --}}
                                                 @if($convidado->telefone)
-                                                    <a href="https://wa.me/{{ preg_replace('/\D/', '', $convidado->telefone) }}" target="_blank" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100">
+                                                    <a href="https://wa.me/{{ preg_replace('/\D/', '', $convidado->telefone) }}" target="_blank" class="p-2 bg-emerald-50 text-emerald-600 rounded-md border border-emerald-100">
                                                         <i class="fa-brands fa-whatsapp text-xs"></i>
                                                     </a>
                                                 @endif
                                                 {{-- Editar --}}
-                                                <a href="{{ route('convidados.edit', $convidado) }}" class="p-2 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100">
+                                                <a href="{{ route('convidados.edit', $convidado) }}" class="p-2 bg-indigo-50 text-indigo-600 rounded-md border border-indigo-100">
                                                     <i class="fa-solid fa-pen text-xs"></i>
                                                 </a>
                                                 {{-- Excluir --}}
-                                                <button onclick="confirmarExclusao('{{ $convidado->id }}', '{{ $convidado->nome }}')" class="p-2 bg-rose-50 text-rose-600 rounded-lg border border-rose-100">
+                                                <button onclick="confirmarExclusao('{{ $convidado->id }}', '{{ $convidado->nome }}')" class="p-2 bg-rose-50 text-rose-600 rounded-md border border-rose-100">
                                                     <i class="fa-solid fa-trash text-xs"></i>
                                                 </button>
                                             </div>
@@ -153,7 +153,7 @@
                 confirmButtonText: 'SIM, REMOVER',
                 cancelButtonText: 'CANCELAR',
                 reverseButtons: true,
-                customClass: { popup: 'rounded-[2.5rem]' }
+                customClass: { popup: 'rounded-md' }
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById('delete-form-' + id).submit();
@@ -202,7 +202,7 @@
                 text: "{{ session('success') }}",
                 showConfirmButton: false,
                 timer: 2500,
-                customClass: { popup: 'rounded-[2.5rem]' }
+                customClass: { popup: 'rounded-md' }
             });
         @endif
     </script>

@@ -59,7 +59,6 @@
         </div>
 
         <div class="max-w-3xl mx-auto">
-            {{-- BLOCO DE PRESENÇA DINÂMICO --}}
             @if($convidado->presenca == 'pendente')
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <form id="form-confirmar" action="{{ route('convite.confirmar', $convidado->token_acesso) }}" method="POST">
@@ -134,19 +133,40 @@
                                     </div>
 
                                     @if($minhaReserva)
-                                        <span class="text-[10px] font-black px-3 py-2 rounded-md bg-indigo-600 text-white shadow-md uppercase">
-                                            VOCÊ LEVA {{ $minhaReserva->pivot->quantidade_levada }}x
-                                        </span>
+                                        <div class="flex flex-col items-end gap-1">
+                                            <span class="text-[10px] font-black px-3 py-2 rounded-md bg-indigo-600 text-white shadow-md uppercase">
+                                                LEVANDO {{ $minhaReserva->pivot->quantidade_levada }}x
+                                            </span>
+                                            <button type="button" onclick="toggleEdit('{{ $item->id }}')" class="text-[10px] font-bold text-indigo-400 hover:text-indigo-600 flex items-center gap-1 transition">
+                                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                                            </button>
+                                        </div>
                                     @endif
                                 </div>
                                 
                                 <div class="mt-auto">
                                     @if($minhaReserva)
+                                        {{-- ÁREA DE EDIÇÃO OCULTA --}}
+                                        <div id="edit-area-{{ $item->id }}" class="hidden mb-4 p-3 bg-indigo-50/50 rounded-md border border-indigo-100 animate-fadeIn">
+                                            <form action="{{ route('itens.vincular', $item->id) }}" method="POST" class="flex items-center gap-2">
+                                                @csrf @method('PUT')
+                                                <input type="hidden" name="convidado_id" value="{{ $convidado->id }}">
+                                                <div class="flex flex-col flex-1">
+                                                    <label class="text-[9px] font-black uppercase text-indigo-400 mb-1">Nova Qtd:</label>
+                                                    <input type="number" name="quantidade_levada" value="{{ $minhaReserva->pivot->quantidade_levada }}" min="1" max="{{ $restante + $minhaReserva->pivot->quantidade_levada }}" 
+                                                           class="w-full py-2 rounded border-slate-200 font-black text-center text-sm focus:ring-indigo-500">
+                                                </div>
+                                                <button type="submit" class="h-10 self-end px-4 bg-indigo-600 text-white text-[10px] font-black uppercase rounded hover:bg-indigo-700 transition">
+                                                    Salvar
+                                                </button>
+                                            </form>
+                                        </div>
+
                                         <form action="{{ route('itens.desvincular', $item->id) }}" method="POST" id="form-remover-{{ $item->id }}">
                                             @csrf @method('PUT')
                                             <input type="hidden" name="convidado_id" value="{{ $convidado->id }}">
-                                            <button type="button" onclick="removerItem({{ $item->id }}, '{{ $item->nome }}')" class="w-full text-[10px] font-bold text-rose-500 hover:text-rose-700 underline py-2">
-                                                Não vou mais levar
+                                            <button type="button" onclick="removerItem({{ $item->id }}, '{{ $item->nome }}')" class="w-full text-[10px] font-bold text-rose-400 hover:text-rose-600 underline py-2 transition">
+                                                Remover da minha lista
                                             </button>
                                         </form>
                                     @elseif($restante > 0)
@@ -218,8 +238,9 @@
     </div>
 
     <script>
-        @if(session('sucesso'))
-            if("{{ session('sucesso') }}".includes("confirmada")) {
+        // --- Feedback de Sucesso ---
+        @if(session('success'))
+            if("{{ session('success') }}".includes("confirmada") || "{{ session('success') }}".includes("Sucesso")) {
                 confetti({
                     particleCount: 150,
                     spread: 70,
@@ -231,12 +252,13 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Tudo certo!',
-                text: '{{ session("sucesso") }}',
+                text: '{{ session("success") }}',
                 confirmButtonText: 'Entendido',
                 timer: 3500
             });
         @endif
 
+        // --- Presença ---
         function confirmarPresenca() {
             Swal.fire({
                 title: 'Confirmar Presença?',
@@ -268,6 +290,12 @@
                     document.getElementById('form-recusar').submit();
                 }
             });
+        }
+
+        // --- Itens ---
+        function toggleEdit(itemId) {
+            const area = document.getElementById('edit-area-' + itemId);
+            area.classList.toggle('hidden');
         }
 
         function confirmarItemComQtd(button, itemName) {

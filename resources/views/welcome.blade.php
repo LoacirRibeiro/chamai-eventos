@@ -1,29 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto Loacir</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="text-center">
-        <h1 class="text-4xl font-bold text-blue-600">Projeto Loacir</h1>
-        <p class="mt-4 text-gray-600">Olá mundo!</p>
-        
-        @if (Route::has('login'))
-            <div class="mt-6">
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 underline">Ir para o Painel</a>
-                @else
-                    <a href="{{ route('login') }}" class="px-4 py-2 bg-blue-500 text-white rounded">Entrar</a>
-                    <a href="{{ route('register') }}" class="ml-4 px-4 py-2 border border-blue-500 text-blue-500 rounded">Cadastrar</a>
-                @endauth
-            </div>
-        @endif
-    </div>
-</body>
-</html> -->
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -83,7 +57,7 @@
                 <i class="fa-solid fa-list-check"></i>
             </div>
             <h3 class="font-bold text-xl mb-2 text-slate-800">Quem leva o quê?</h3>
-            <p class="text-slate-500 text-sm">Compartilhe a lista de itens para que cada convidado saiba o que levar.</p>
+            <p class="text-slate-500 text-sm">Compartilhe a lista de itens para que cada convidado saiba o que levar. Evita que em um churrasco apareçam 10 pessoas com pão de alho e ninguém com o carvão.</p>
         </div>
 
         <div class="bg-white p-8 rounded-md border border-slate-100 shadow-sm hover:shadow-md transition">

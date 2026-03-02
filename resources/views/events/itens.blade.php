@@ -98,7 +98,7 @@
                                 <tr class="bg-slate-50/50">
                                     <th class="px-4 py-3 text-[9px] font-black text-slate-400 uppercase text-left">Convidado</th>
                                     <th class="px-4 py-3 text-[9px] font-black text-slate-400 uppercase text-center">Itens</th>
-                                    <th class="px-4 py-3 text-[9px] font-black text-slate-400 uppercase text-right">Adicionar</th>
+                                    <th class="px-4 py-3 text-[9px] font-black text-slate-400 uppercase text-right">Atribuir</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-50 bg-white">

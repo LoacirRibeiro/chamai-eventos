@@ -1,181 +1,137 @@
 @php $event = $event; @endphp
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div class="flex items-center gap-4">
-                <a href="{{ route('dashboard') }}" class="w-10 h-10 flex items-center justify-center rounded-md bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 transition shadow-sm">
-                    <i class="fa-solid fa-arrow-left"></i>
+        {{-- Header ajustado para ultra-responsividade --}}
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-1">
+            <div class="flex items-center gap-3 w-full">
+                <a href="{{ route('dashboard') }}" class="w-8 h-8 flex shrink-0 items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 shadow-sm">
+                    <i class="fa-solid fa-arrow-left text-xs"></i>
                 </a>
-                <div>
-                    <h2 class="font-black text-2xl text-slate-800 tracking-tight leading-none">
+                <div class="min-w-0">
+                    <h2 class="font-black text-base md:text-2xl text-slate-800 tracking-tight truncate leading-tight">
                         {{ $event->titulo }}
                     </h2>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
-                        <i class="fa-solid fa-location-dot text-indigo-400 mr-1"></i> {{ $event->local }}
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest truncate">
+                        {{ $event->local }}
                     </p>
                 </div>
             </div>
 
-            <div class="flex gap-2">
-                <a href="{{ route('convidados.create', $event) }}" class="bg-indigo-600 text-white px-6 py-2 rounded-md font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 flex items-center gap-2">
+            {{-- Botões lado a lado mesmo no mobile pequeno --}}
+            <div class="flex gap-2 w-full sm:w-auto">
+                <a href="{{ route('convidados.create', $event) }}" class="flex-1 sm:flex-none justify-center bg-indigo-600 text-white px-3 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-indigo-700 flex items-center gap-2">
                     <i class="fa-solid fa-user-plus"></i> Convidar
                 </a>
-                <a href="{{ route('dashboard') }}" class="bg-slate-100 text-slate-500 px-4 py-2 rounded-md font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition flex items-center gap-2">
-                    <i class="fa-solid fa-house"></i> Dashboard
+                <a href="{{ route('dashboard') }}" class="flex-1 sm:flex-none justify-center bg-slate-100 text-slate-500 px-3 py-2 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-slate-200 flex items-center gap-2">
+                    <i class="fa-solid fa-house"></i> Início
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    {{-- Reduzi o padding de py-12 para py-4 em telas pequenas --}}
+    <div class="py-4 md:py-10">
+        {{-- Mudança crucial: px-2 abaixo de 640px para ganhar espaço --}}
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 space-y-4 md:space-y-8">
             
-            {{-- Cards de Resumo --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-md border border-slate-100 shadow-sm flex items-center gap-5">
-                    <div class="w-14 h-14 bg-slate-50 text-slate-400 rounded-md flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-users"></i>
+            {{-- Cards de Resumo: Grid 1 coluna no mobile e 3 colunas acima de 640px --}}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
+                    <div class="w-10 h-10 bg-slate-50 text-slate-400 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-users text-sm"></i>
                     </div>
                     <div>
-                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Total</p>
-                        <h4 class="text-2xl font-black text-slate-800">{{ $event->convidados->count() }}</h4>
+                        <p class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Total</p>
+                        <h4 class="text-lg font-black text-slate-800 leading-none">{{ $event->convidados->count() }}</h4>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-md border border-slate-100 shadow-sm flex items-center gap-5">
-                    <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-md flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-check-double"></i>
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
+                    <div class="w-10 h-10 bg-emerald-50 text-emerald-500 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-check text-sm"></i>
                     </div>
                     <div>
-                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Confirmados</p>
-                        <h4 class="text-2xl font-black text-emerald-600">
-                            {{ $event->convidados->where('presenca', 'confirmado')->count() }}
-                        </h4>
+                        <p class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Confirmados</p>
+                        <h4 class="text-lg font-black text-emerald-600 leading-none">{{ $event->convidados->where('presenca', 'confirmado')->count() }}</h4>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-md border border-slate-100 shadow-sm flex items-center gap-5">
-                    <div class="w-14 h-14 bg-amber-50 text-amber-500 rounded-md flex items-center justify-center text-xl">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
+                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
+                    <div class="w-10 h-10 bg-amber-50 text-amber-500 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-clock text-sm"></i>
                     </div>
                     <div>
-                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Pendentes</p>
-                        <h4 class="text-2xl font-black text-amber-600">
-                            {{ $event->convidados->where('presenca', 'pendente')->count() }}
-                        </h4>
+                        <p class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Pendentes</p>
+                        <h4 class="text-lg font-black text-amber-600 leading-none">{{ $event->convidados->where('presenca', 'pendente')->count() }}</h4>
                     </div>
                 </div>
             </div>
 
-            {{-- Tabela de Convidados --}}
-            <div class="bg-white rounded-md border border-slate-100 shadow-sm overflow-hidden">
-                <div class="p-8 border-b border-slate-50 flex justify-between items-center bg-white">
-                    <h3 class="font-black text-lg text-slate-800 uppercase tracking-tighter">Lista de Convidados</h3>
-                    <button onclick="window.print()" class="text-slate-400 hover:text-indigo-600 transition text-sm font-bold uppercase tracking-widest">
-                        <i class="fa-solid fa-print"></i> Imprimir
+            {{-- Container da Tabela --}}
+            <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+                <div class="p-4 md:p-8 border-b border-slate-50 flex justify-between items-center bg-white">
+                    <h3 class="font-black text-xs md:text-lg text-slate-800 uppercase">Lista</h3>
+                    <button onclick="window.print()" class="text-slate-400 text-[9px] font-bold uppercase tracking-widest">
+                        <i class="fa-solid fa-print"></i> <span class="hidden xs:inline">Imprimir</span>
                     </button>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50/50">
-                                <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome</th>
-                                <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                                <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            @forelse($event->convidados as $convidado)
-                                <tr class="hover:bg-slate-50/50 transition">
-                                    <td class="px-8 py-5">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-md flex items-center justify-center font-black text-sm uppercase">
-                                                {{ substr($convidado->nome, 0, 1) }}
+                {{-- Tabela: O pulo do gato está no 'w-full overflow-x-auto' e no 'inline-block min-w-full' --}}
+                <div class="w-full overflow-x-auto">
+                    <div class="inline-block min-w-full align-middle">
+                        <table class="min-w-full divide-y divide-slate-100">
+                            <thead>
+                                <tr class="bg-slate-50/50">
+                                    <th class="px-4 md:px-8 py-3 text-[9px] font-black text-slate-400 uppercase text-left">Nome</th>
+                                    <th class="px-4 md:px-8 py-3 text-[9px] font-black text-slate-400 uppercase text-center">Status</th>
+                                    <th class="px-4 md:px-8 py-3 text-[9px] font-black text-slate-400 uppercase text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-50 bg-white">
+                                @forelse($event->convidados as $convidado)
+                                    <tr class="hover:bg-slate-50/50 transition">
+                                        <td class="px-4 md:px-8 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-8 h-8 bg-indigo-50 text-indigo-600 rounded flex shrink-0 items-center justify-center font-black text-[10px] uppercase">
+                                                    {{ substr($convidado->nome, 0, 1) }}
+                                                </div>
+                                                <div class="min-w-0">
+                                                    <p class="font-bold text-[11px] text-slate-700 leading-tight truncate max-w-[100px] xs:max-w-none">{{ $convidado->nome }}</p>
+                                                    <p class="text-[9px] text-slate-400">{{ $convidado->telefone ?? 'S/ Tel' }}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p class="font-bold text-slate-700 leading-tight">{{ $convidado->nome }}</p>
-                                                <p class="text-[10px] text-slate-400 font-bold tracking-tight">
-                                                    <i class="fa-brands fa-whatsapp text-emerald-400"></i> {{ $convidado->telefone ?? 'Sem telefone' }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-8 py-5">
-                                        @php
-                                            $statusClasses = [
-                                                'confirmado' => 'bg-emerald-100 text-emerald-700',
-                                                'recusado' => 'bg-rose-100 text-rose-700',
-                                                'pendente' => 'bg-slate-100 text-slate-400'
-                                            ];
-                                            $status = $convidado->presenca ?? 'pendente';
-                                        @endphp
-                                        <span class="px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-widest {{ $statusClasses[$status] }}">
-                                            {{ ucfirst($status) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-8 py-5 text-right">
-                                        <div class="flex justify-end gap-2 items-center">
-                                            
-                                            {{-- AÇÃO: ENVIAR WHATSAPP --}}
-                                            @if($convidado->telefone)
-                                                <a href="https://wa.me/{{ preg_replace('/\D/', '', $convidado->telefone) }}?text={{ urlencode('Olá ' . explode(' ', $convidado->nome)[0] . '! 🚀' . PHP_EOL . 'Confirme sua presença pelo link:' . PHP_EOL . route('convite.publico', $convidado->token_acesso)) }}" 
-                                                target="_blank"
-                                                class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-md hover:bg-emerald-600 hover:text-white transition-all border border-emerald-100" 
-                                                title="Enviar WhatsApp">
-                                                    <i class="fa-brands fa-whatsapp"></i>
-                                                    <span class="text-[10px] font-black uppercase tracking-widest">Enviar</span>
+                                        </td>
+                                        <td class="px-4 md:px-8 py-4 text-center whitespace-nowrap">
+                                            <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter
+                                                {{ $convidado->presenca == 'confirmado' ? 'bg-emerald-100 text-emerald-700' : ($convidado->presenca == 'recusado' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-500') }}">
+                                                {{ $convidado->presenca ?? 'Pendente' }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 md:px-8 py-4 text-right whitespace-nowrap">
+                                            <div class="flex justify-end gap-1">
+                                                {{-- WhatsApp Compacto --}}
+                                                @if($convidado->telefone)
+                                                    <a href="https://wa.me/{{ preg_replace('/\D/', '', $convidado->telefone) }}" target="_blank" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100">
+                                                        <i class="fa-brands fa-whatsapp text-xs"></i>
+                                                    </a>
+                                                @endif
+                                                {{-- Editar --}}
+                                                <a href="{{ route('convidados.edit', $convidado) }}" class="p-2 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100">
+                                                    <i class="fa-solid fa-pen text-xs"></i>
                                                 </a>
-                                            @endif
-
-                                            {{-- AÇÃO: EDITAR --}}
-                                            <a href="{{ route('convidados.edit', $convidado) }}" 
-                                            class="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-md hover:bg-indigo-600 hover:text-white transition-all border border-indigo-100" 
-                                            title="Editar Convidado">
-                                                <i class="fa-solid fa-pen-to-square"></i>
-                                                <span class="text-[10px] font-black uppercase tracking-widest">Editar</span>
-                                            </a>
-
-                                            {{-- AÇÃO: STATUS (Mudar Status) --}}
-                                            <!-- <button type="button" 
-                                                    onclick="escolherStatus('{{ $convidado->id }}', '{{ $convidado->nome }}')" 
-                                                    class="flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-600 rounded-md hover:bg-amber-600 hover:text-white transition-all border border-amber-100 cursor-pointer" 
-                                                    title="Mudar Status">
-                                                <i class="fa-solid fa-arrows-rotate"></i>
-                                                <span class="text-[10px] font-black uppercase tracking-widest">Status</span>
-                                            </button> -->
-
-                                            <!-- {{-- Formulário Oculto para o Status --}}
-                                            <form id="status-form-{{ $convidado->id }}" action="{{ route('convidados.update', $convidado) }}" method="POST" class="hidden">
-                                                @csrf 
-                                                @method('PUT')
-                                                <input type="hidden" name="presenca" id="status-input-{{ $convidado->id }}">
-                                            </form> -->
-
-                                            {{-- AÇÃO: EXCLUIR --}}
-                                            <button type="button" 
-                                                    onclick="confirmarExclusao('{{ $convidado->id }}', '{{ $convidado->nome }}')" 
-                                                    class="flex items-center gap-2 px-3 py-1.5 bg-rose-50 text-rose-600 rounded-md hover:bg-rose-600 hover:text-white transition-all border border-rose-100 cursor-pointer">
-                                                <i class="fa-solid fa-trash-can"></i>
-                                                <span class="text-[10px] font-black uppercase tracking-widest">Excluir</span>
-                                            </button>
-
-                                            {{-- Formulário oculto para exclusão --}}
-                                            <form id="delete-form-{{ $convidado->id }}" action="{{ route('convidados.destroy', $convidado) }}" method="POST" class="hidden">
-                                                @csrf @method('DELETE')
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="3" class="px-8 py-12 text-center text-slate-400 font-medium italic bg-slate-50/30">
-                                        Nenhum convidado na lista ainda.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                                {{-- Excluir --}}
+                                                <button onclick="confirmarExclusao('{{ $convidado->id }}', '{{ $convidado->nome }}')" class="p-2 bg-rose-50 text-rose-600 rounded-lg border border-rose-100">
+                                                    <i class="fa-solid fa-trash text-xs"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    {{-- ... empty ... --}}
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

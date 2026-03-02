@@ -1,7 +1,7 @@
 @php $event = $event; @endphp
 <x-app-layout>
     <x-slot name="header">
-        {{-- Header ajustado para ultra-responsividade --}}
+        {{-- Header  --}}
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-1">
             <div class="flex items-center gap-3 w-full">
                 <a href="{{ route('dashboard') }}" class="w-8 h-8 flex shrink-0 items-center justify-center rounded-md bg-white border border-slate-200 text-slate-400 shadow-sm">
@@ -71,9 +71,9 @@
             <div class="bg-white rounded-md border border-slate-100 shadow-sm overflow-hidden">
                 <div class="p-4 md:p-8 border-b border-slate-50 flex justify-between items-center bg-white">
                     <h3 class="font-black text-xs md:text-lg text-slate-800 uppercase">Lista</h3>
-                    <button onclick="window.print()" class="text-slate-400 text-[9px] font-bold uppercase tracking-widest">
-                        <i class="fa-solid fa-print"></i> <span class="hidden xs:inline">Imprimir</span>
-                    </button>
+                    <a href="{{ route('events.print', $event) }}" target="_blank" class="text-slate-400 text-[9px] font-bold uppercase tracking-widest hover:text-indigo-600 transition">
+                        <i class="fa-solid fa-print"></i> <span class="hidden xs:inline">Imprimir Relatório</span>
+                    </a>
                 </div>
 
                 {{-- Tabela: Lista' --}}

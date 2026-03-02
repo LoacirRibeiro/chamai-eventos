@@ -184,9 +184,26 @@ class EventController extends Controller
     }
 
     public function detalhes(Event $event)
-{
-    // Carrega o evento com todas as atividades
-    $event->load('activities');
-    return view('events.detalhes', compact('event'));
-}
+    {
+        // Carrega o evento com todas as atividades
+        $event->load('activities');
+        return view('events.detalhes', compact('event'));
+    }
+
+    public function imprimirLista(Event $event)
+    {
+        // Verifica se o usuário é o dono do evento
+        if ($event->user_id !== auth()->id()) { abort(403); }
+
+        $event->load(['convidados', 'itens.convidados']);
+        
+        // Cálculos rápidos para o cabeçalho do relatório
+        $stats = [
+            'total' => $event->convidados->count(),
+            'confirmados' => $event->convidados->where('presenca', 'confirmado')->count(),
+            'pendentes' => $event->convidados->where('presenca', 'pendente')->count(),
+        ];
+
+        return view('events.print-lista', compact('event', 'stats'));
+    }
 }

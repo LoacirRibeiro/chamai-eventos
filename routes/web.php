@@ -89,6 +89,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     //detalhes do evento
     Route::get('/events/{event}/detalhes', [EventController::class, 'detalhes'])->name('events.detalhes');
+
+    // Imprimir lista de convidados e itens (Organizador)
+    Route::get('/eventos/{event}/imprimir', [EventController::class, 'imprimirLista'])->name('events.print');
 });
 
 require __DIR__.'/auth.php';

@@ -54,10 +54,10 @@
                     <i class="fa-solid fa-bolt-lightning text-xl"></i>
                 </div>
                 <div>
-                    <span class="font-black text-2xl tracking-tighter text-slate-800 block leading-none">
+                    <span class="font-black text-[38px] tracking-tighter text-slate-800 block leading-none">
                         Chamaí
                     </span>
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span class="text-[12px] font-bold text-slate-400 uppercase tracking-widest">
                        Eventos & Festas
                     </span>
                 </div>
@@ -78,32 +78,32 @@
                 <div class="pt-4 pb-2 border-t border-slate-50 mt-4">
 
                     <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] ml-5 mb-3 italic">
-                        Evento Ativo
+                        Gerenciar Evento 
                     </p>
 
                     <a href="{{ route('events.show', $activeEvent) }}"
-                       class="flex items-center gap-4 px-5 py-4 rounded-md transition-all
+                       class="flex items-center gap-3 px-5 py-3 rounded-md transition-all
                        {{ request()->routeIs('events.show') ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600' }}">
                         <i class="fa-solid fa-users text-lg"></i>
                         Convidados
                     </a>
 
                     <a href="{{ route('itens.index', $activeEvent) }}"
-                       class="flex items-center gap-4 px-5 py-4 rounded-md transition-all
+                       class="flex items-center gap-3 px-5 py-3 rounded-md transition-all
                        {{ request()->routeIs('itens.*') ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600' }}">
                         <i class="fa-solid fa-basket-shopping text-lg"></i>
                         Itens da Festa
                     </a>
 
                     <a href="{{ route('events.galeria', $activeEvent) }}"
-                       class="flex items-center gap-4 px-5 py-4 rounded-md transition-all
+                       class="flex items-center gap-3 px-5 py-3 rounded-md transition-all
                        {{ request()->routeIs('events.galeria') ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600' }}">
                         <i class="fa-solid fa-images text-lg"></i>
                         Galeria
                     </a>
 
                     <a href="{{ route('events.detalhes', $activeEvent) }}"
-                       class="flex items-center gap-4 px-5 py-4 rounded-md transition-all
+                       class="flex items-center gap-3 px-5 py-3 rounded-md transition-all
                        {{ request()->routeIs('events.detalhes') ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600' }}">
                         <i class="fa-solid fa-chart-line text-lg"></i>
                         Detalhes & Logs
@@ -115,7 +115,7 @@
                 <!-- PERFIL -->
                 <div class="pt-4">
                     <a href="{{ route('profile.edit') }}"
-                       class="flex items-center gap-4 px-5 py-4 rounded-md transition-all
+                       class="flex items-center gap-3 px-5 py-3 rounded-md transition-all
                        {{ request()->routeIs('profile.edit') ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600' }}">
                         <i class="fa-solid fa-user-gear text-lg"></i>
                         Meu Perfil
@@ -160,7 +160,14 @@
 
         <!-- HEADER MOBILE -->
         <div class="lg:hidden bg-white border-b p-4 flex items-center justify-between sticky top-0 z-30">
-            <span class="font-black text-lg tracking-tighter">Chamaí</span>
+            <div>
+                    <h2 class="font-black text-[38px] text-slate-800 tracking-tight leading-none">
+                        Chamaí
+                    </h2>
+                    <p class="text-[14px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                        Organizar eventos nunca foi tão fácil
+                    </p>
+                </div>
             <button @click="sidebarOpen = true"
                 class="w-10 h-10 flex items-center justify-center bg-slate-50 rounded-md border">
                 <i class="fa-solid fa-bars-staggered"></i>
@@ -175,15 +182,43 @@
         </header>
         @endisset
 
-        <main class="flex-1 p-6 lg:p-12 overflow-x-hidden">
-            <div class="max-w-7xl mx-auto">
-                {{ $slot }}
+        <main class="min-h-screen bg-slate-50 pb-20">
+    <div class="max-w-7xl mx-auto pt-8 px-4 sm:px-6 lg:px-8">
+        
+        <div class="mb-12 text-center">
+            <div class="inline-flex flex-col items-center gap-2">
+                <div class="w-14 h-14 bg-indigo-600 rounded-[1.2rem] flex items-center justify-center shadow-lg shadow-indigo-100 rotate-3">
+                    <i class="fa-solid fa-rocket text-white text-xl"></i>
+                </div>
+                <h1 class="text-2xl font-black tracking-tighter text-slate-800 mt-2">Chama<span class="text-indigo-600">í</span></h1>
             </div>
-        </main>
+        </div>
+
+        <div class="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden rounded-[2rem] md:rounded-[3rem] p-4 md:p-10">
+            {{ $slot }}
+        </div>
+
+        <footer class="mt-12 mb-8 text-center px-4">
+    <div class="flex flex-col items-center gap-2">
+        <p class="text-slate-400 text-[12px] font-bold uppercase tracking-[0.2em]">
+            © 2026 Chamaí • Todos os direitos reservados
+        </p>
+        
+        <p class="text-slate-300 text-[10px] font-medium uppercase tracking-widest flex items-center gap-2">
+            <span>Seu evento decola aqui</span>
+            <span class="text-slate-200">•</span>
+            <span>Criado por <span class="text-indigo-300">Loacir Ribeiro Bueno</span></span>
+        </p>
+    </div>
+</footer>
+        
+    </div>
+</main>
 
     </div>
 
 </div>
+
 
 @stack('scripts')
 

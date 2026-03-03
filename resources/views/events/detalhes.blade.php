@@ -8,10 +8,10 @@
                     <i class="fa-solid fa-chevron-left"></i>
                 </a>
                 <div>
-                    <h2 class="font-black text-2xl text-slate-800 tracking-tight leading-none">
+                    <h2 class="font-black text-[38px] text-slate-800 tracking-tight leading-none">
                         Detalhes & Log
                     </h2>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+                    <p class="text-[14px] font-bold text-slate-400 uppercase tracking-widest mt-1">
                         {{ $event->titulo }}
                     </p>
                 </div>

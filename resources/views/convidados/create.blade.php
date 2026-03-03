@@ -4,7 +4,7 @@
             <a href="{{ route('events.show', $event->id) }}" class="w-10 h-10 flex items-center justify-center rounded-md bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 transition shadow-sm">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
-            <h2 class="font-black text-2xl text-slate-800 tracking-tight">
+            <h2 class="font-black text-[40px] text-slate-800 tracking-tight">
                 Novo <span class="text-indigo-600">Convidado</span>
             </h2>
         </div>
@@ -28,7 +28,7 @@
                         @csrf
 
                         <div>
-                            <label class="block text-xs font-black uppercase text-slate-400 mb-2 ml-1">Nome Completo</label>
+                            <label class="block text-[12px] font-black uppercase text-slate-400 mb-2 ml-1">Nome Completo</label>
                             <div class="relative group">
                                 <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-300 group-focus-within:text-indigo-500 transition-colors">
                                     <i class="fa-solid fa-user"></i>
@@ -39,7 +39,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-black uppercase text-slate-400 mb-2 ml-1">WhatsApp (com DDD)</label>
+                            <label class="block text-[12px] font-black uppercase text-slate-400 mb-2 ml-1">WhatsApp (com DDD)</label>
                             <div class="relative group">
                                 <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-300 group-focus-within:text-emerald-500 transition-colors">
                                     <i class="fa-brands fa-whatsapp text-lg"></i>
@@ -47,11 +47,11 @@
                                 <input type="text" name="telefone" placeholder="Ex: 63992001122" required
                                     class="block w-full pl-11 pr-4 py-4 rounded-md border-slate-200 focus:ring-emerald-500 focus:border-emerald-500 text-slate-700 font-bold">
                             </div>
-                            <p class="mt-2 text-[10px] text-slate-400 font-medium ml-1">Digite apenas números com o DDD para o disparo automático funcionar.</p>
+                            <p class="mt-2 text-[12px] text-slate-400 font-medium ml-1">Digite apenas números com o DDD para o disparo automático funcionar.</p>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-black uppercase text-slate-400 mb-2 ml-1">E-mail (Opcional)</label>
+                            <label class="block text-[12px] font-black uppercase text-slate-400 mb-2 ml-1">E-mail (Opcional)</label>
                             <div class="relative group">
                                 <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-300 group-focus-within:text-indigo-500 transition-colors">
                                     <i class="fa-solid fa-envelope"></i>
@@ -62,7 +62,7 @@
                         </div>
 
                         <div class="pt-6">
-                            <button type="submit" class="w-full bg-indigo-600 text-white py-4 rounded-md font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 flex items-center justify-center gap-2">
+                            <button type="submit" class="w-full bg-indigo-600 text-white py-4 rounded-md font-black text-[15px] uppercase tracking-[0.2em] hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-plus"></i> Adicionar à Lista
                             </button>
                         </div>

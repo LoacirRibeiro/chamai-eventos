@@ -7,7 +7,7 @@
                     <i class="fa-solid fa-arrow-left"></i>
                 </a>
                 <div>
-                    <h2 class="font-black text-2xl text-slate-800 tracking-tight leading-none">
+                    <h2 class="font-black text-[40px] text-slate-800 tracking-tight leading-none">
                         Galeria de Fotos
                     </h2>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">

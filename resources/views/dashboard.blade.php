@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-2">
             <div>
-                <h2 class="font-black text-2xl md:text-3xl text-slate-800 tracking-tight leading-none">
+                <h2 class="font-black text-[40px] md:text-[40px] text-slate-800 tracking-tight leading-none">
                     Meus <span class="text-indigo-600">Eventos</span>
                 </h2>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
-                    Painel de Controle Geral
+                <p class="text-[12px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">
+                    Painel de Acesso
                 </p>
             </div>
             <a href="{{ route('events.create') }}" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-md font-black text-xs transition shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 uppercase tracking-widest">
@@ -52,8 +52,8 @@
 
         {{-- 2. GRID DE EVENTOS --}}
         <div class="mb-6 flex items-center justify-between">
-            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Seus Eventos Ativos</h3>
-            <span class="text-[9px] font-black text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md uppercase">
+            <h3 class="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em]">Meus Eventos Ativos</h3>
+            <span class="text-[12px] font-black text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md uppercase">
                 {{ $events->count() }} Total
             </span>
         </div>
@@ -69,23 +69,23 @@
                                 <span class="block text-slate-800 font-black text-lg leading-none group-hover:text-white">
                                     {{ \Carbon\Carbon::parse($evento->data_horario)->format('d') }}
                                 </span>
-                                <span class="text-[9px] uppercase font-black text-slate-400 tracking-tighter group-hover:text-indigo-100">
+                                <span class="text-[20px] uppercase font-black text-slate-400 tracking-tighter group-hover:text-indigo-100">
                                     {{ \Carbon\Carbon::parse($evento->data_horario)->translatedFormat('M') }}
                                 </span>
                             </div>
                             
                             <div class="text-right">
-                                <span class="text-[9px] font-black bg-emerald-50 text-emerald-600 px-2 py-1 rounded-md uppercase border border-emerald-100">
+                                <span class="text-[12px] font-black bg-emerald-50 text-emerald-600 px-2 py-1 rounded-md uppercase border border-emerald-100">
                                     {{ $evento->convidados_count ?? $evento->convidados->count() }} Convidados
                                 </span>
                             </div>
                         </div>
 
-                        <h3 class="text-lg font-black text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors leading-tight">
+                        <h3 class="text-[30px] font-black text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors leading-tight">
                             {{ $evento->titulo }}
                         </h3>
                         
-                        <p class="text-[11px] text-slate-400 font-bold mb-6 flex items-center gap-1.5">
+                        <p class="text-[12px] text-slate-400 font-bold mb-6 flex items-center gap-1.5">
                             <i class="fa-solid fa-location-dot text-indigo-400"></i>
                             <span class="truncate">{{ $evento->local ?? 'Local a definir' }}</span>
                         </p>
@@ -99,15 +99,15 @@
                             @endphp
 
                             @if($diasRestantes > 0)
-                                <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">
+                                <p class="text-[16px] font-black text-indigo-600 uppercase tracking-widest">
                                     Faltam {{ $diasRestantes }} {{ $diasRestantes > 1 ? 'Dias' : 'Dia' }}
                                 </p>
                             @elseif($diasRestantes == 0)
-                                <p class="text-[10px] font-black text-rose-500 uppercase tracking-widest animate-pulse">
+                                <p class="text-[16px] font-black text-rose-500 uppercase tracking-widest animate-pulse">
                                     É HOJE! 🥳
                                 </p>
                             @else
-                                <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+                                <p class="text-[12px] font-black text-slate-300 uppercase tracking-widest">
                                     Evento Finalizado
                                 </p>
                             @endif
@@ -116,9 +116,9 @@
 
                     {{-- Footer --}}
                     <div class="px-6 py-4 bg-slate-50/30 border-t border-slate-50 flex items-center justify-between">
-                         <span class="text-[10px] font-black text-slate-300 uppercase tracking-tighter italic">Status: Ativo</span>
+                         <span class="text-[12px] font-black text-slate-300 uppercase tracking-tighter italic">Status: Ativo</span>
                          
-                         <a href="{{ route('events.show', $evento->id) }}" class="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-md font-black text-[10px] uppercase hover:bg-indigo-600 transition shadow-sm">
+                         <a href="{{ route('events.show', $evento->id) }}" class="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-md font-black text-[14px] uppercase hover:bg-indigo-600 transition shadow-sm">
                             Gerenciar <i class="fa-solid fa-chevron-right text-[8px]"></i>
                          </a>
                     </div>

@@ -10,14 +10,14 @@
         </div>
 
         <div>
-            <label class="block text-xs font-black uppercase text-slate-400 mb-2 ml-1">E-mail</label>
-            <x-text-input id="email" class="block mt-1 w-full !rounded-md border-slate-200 focus:ring-indigo-500" type="email" name="email" :value="old('email')" required autofocus />
+            <label class="block text-[12px] font-black uppercase text-slate-400 mb-2 ml-1">Usuário</label>
+            <x-text-input id="email" class="block mt-1 w-full !rounded-md border-slate-200 focus:ring-indigo-500 text-[14px]" type="email" name="email" :value="old('email')" placeholder="Ex: usuario@gmail.com" required autofocus />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <div class="mt-4">
             <label class="block text-xs font-black uppercase text-slate-400 mb-2 ml-1">Senha</label>
-            <x-text-input id="password" class="block mt-1 w-full !rounded-md border-slate-200 focus:ring-indigo-500" type="password" name="password" required />
+            <x-text-input id="password" class="block mt-1 w-full !rounded-md border-slate-200 focus:ring-indigo-500" type="password" name="password"  required />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
@@ -35,7 +35,7 @@
 
         <div class="pt-2">
             <button class="w-full bg-indigo-600 text-white py-4 rounded-md font-black text-sm hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 uppercase tracking-widest">
-                Entrar no Painel
+                Entrar
             </button>
         </div>
 

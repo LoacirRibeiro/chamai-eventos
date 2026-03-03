@@ -41,7 +41,7 @@
                         <i class="fa-solid fa-users text-sm"></i>
                     </div>
                     <div>
-                        <p class="text-[12px] font-black text-slate-400 uppercase tracking-tighter">Total</p>
+                        <p class="text-[12px] font-black text-slate-400 uppercase tracking-tighter ">Total</p>
                         <h4 class="text-lg font-black text-slate-800 leading-none">{{ $event->convidados->count() }}</h4>
                     </div>
                 </div>

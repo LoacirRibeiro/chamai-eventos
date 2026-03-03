@@ -12,9 +12,15 @@
 <body class="bg-slate-50 font-sans antialiased">
 
     <nav class="p-6 flex justify-between items-center bg-white shadow-sm">
-        <div class="text-2xl font-black text-indigo-600 tracking-tighter">
-            LOACIR <span class="text-slate-800">EVENTOS</span>
-        </div>
+         <div>
+                    <span class="font-black text-[36px] tracking-tighter text-slate-800 block leading-none">
+                        Chama<span class="text-indigo-600">í</span>
+                    </span>
+                    
+                    <span class="text-[12px] font-bold text-slate-400 uppercase tracking-widest">
+                       Eventos & Festas
+                    </span>
+                </div>
         <div>
             @if (Route::has('login'))
                 @auth

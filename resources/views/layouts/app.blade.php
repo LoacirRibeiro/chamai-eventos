@@ -54,9 +54,10 @@
                     <i class="fa-solid fa-bolt-lightning text-xl"></i>
                 </div>
                 <div>
-                    <span class="font-black text-[38px] tracking-tighter text-slate-800 block leading-none">
-                        Chamaí
+                    <span class="font-black text-[36px] tracking-tighter text-slate-800 block leading-none">
+                        Chama<span class="text-indigo-600">í</span>
                     </span>
+                    
                     <span class="text-[12px] font-bold text-slate-400 uppercase tracking-widest">
                        Eventos & Festas
                     </span>
@@ -161,9 +162,7 @@
         <!-- HEADER MOBILE -->
         <div class="lg:hidden bg-white border-b p-4 flex items-center justify-between sticky top-0 z-30">
             <div>
-                    <h2 class="font-black text-[38px] text-slate-800 tracking-tight leading-none">
-                        Chamaí
-                    </h2>
+                    <h1 class="text-[36px] font-black tracking-tighter text-slate-800 mt-2">Chama<span class="text-indigo-600">í</span></h1>
                     <p class="text-[14px] font-bold text-slate-400 uppercase tracking-widest mt-1">
                         Organizar eventos nunca foi tão fácil
                     </p>
@@ -187,21 +186,21 @@
         
         <div class="mb-12 text-center">
             <div class="inline-flex flex-col items-center gap-2">
-                <div class="w-14 h-14 bg-indigo-600 rounded-[1.2rem] flex items-center justify-center shadow-lg shadow-indigo-100 rotate-3">
+                <div class="w-14 h-14 bg-indigo-600 rounded-md flex items-center justify-center shadow-lg shadow-indigo-100 rotate-3">
                     <i class="fa-solid fa-rocket text-white text-xl"></i>
                 </div>
                 <h1 class="text-2xl font-black tracking-tighter text-slate-800 mt-2">Chama<span class="text-indigo-600">í</span></h1>
             </div>
         </div>
 
-        <div class="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden rounded-[2rem] md:rounded-[3rem] p-4 md:p-10">
+        <div class="w-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden rounded-md md:rounded-md p-4 md:p-10">
             {{ $slot }}
         </div>
 
         <footer class="mt-12 mb-8 text-center px-4">
     <div class="flex flex-col items-center gap-2">
-        <p class="text-slate-400 text-[12px] font-bold uppercase tracking-[0.2em]">
-            © 2026 Chamaí • Todos os direitos reservados
+        <p class="text-slate-400 text-[12px] font-bold  tracking-[0.2em]">
+            © 2026 Chama<span class="text-indigo-600">í</span> • Todos os direitos reservados
         </p>
         
         <p class="text-slate-300 text-[10px] font-medium uppercase tracking-widest flex items-center gap-2">

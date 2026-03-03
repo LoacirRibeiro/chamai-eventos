@@ -52,7 +52,7 @@
 
         {{-- 2. GRID DE EVENTOS --}}
         <div class="mb-6 flex items-center justify-between">
-            <h3 class="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em]">Meus Eventos Ativos</h3>
+            <h3 class="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em]">Meus Eventos</h3>
             <span class="text-[12px] font-black text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md uppercase">
                 {{ $events->count() }} Total
             </span>

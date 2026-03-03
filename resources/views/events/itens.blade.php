@@ -113,7 +113,7 @@
                                         <td class="px-4 py-4 text-center">
                                             <div class="flex flex-wrap justify-center gap-1 min-w-[120px]">
                                                 @forelse($convidado->itens as $itemViculado)
-                                                    <span class="inline-block bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded text-[10px] font-black uppercase whitespace-nowrap">
+                                                    <span class="inline-block bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-md text-[10px] font-black uppercase whitespace-nowrap">
                                                         {{ $itemViculado->pivot->quantidade_levada }}x {{ $itemViculado->nome }}
                                                     </span>
                                                 @empty

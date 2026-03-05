@@ -27,23 +27,37 @@ class EventController extends Controller
             'local' => 'required|string',
         ]);
 
+        // Criamos o evento com o tipo escolhido pelo botão
         $event = Event::create([
             'user_id' => Auth::id(),
             'titulo' => $request->titulo,
             'descricao' => $request->descricao,
             'data_horario' => $request->data_horario,
             'local' => $request->local,
+            'tipo' => $request->tipo ?? 'comum', // Captura 'doacao' ou 'comum'
             'slug' => Str::slug($request->titulo) . '-' . rand(1000, 9999),
         ]);
 
-        // --- REGISTRO DE ATIVIDADE ---
+        // Registro de Atividade Dinâmico
+        $msg = $event->tipo === 'doacao' 
+            ? "Nova campanha de doação: '{$event->titulo}'" 
+            : "O foguete foi lançado! Evento '{$event->titulo}' criado.";
+
         Activity::create([
             'event_id' => $event->id,
-            'mensagem' => "O foguete foi lançado! O evento '{$event->titulo}' foi criado.",
-            'tipo' => 'presenca' // Usando 'presenca' como tipo geral de sistema
+            'mensagem' => $msg,
+            'tipo' => 'presenca'
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Evento criado com sucesso!');
+        // REDIRECIONAMENTO LÓGICO
+        // if ($event->tipo === 'doacao') {
+            // Se for doação, vai para a tela de gerenciar os itens da campanha
+        //     return redirect()->route('doacao.itens', $event->slug)
+        //                     ->with('success', 'Evento de doação criado! Agora defina os itens.');
+        // }
+
+        // Se for comum, volta para o dashboard
+        return redirect()->route('dashboard')->with('success', 'Evento comum criado com sucesso!');
     }
 
     public function addItem(Request $request, Event $event)
@@ -70,6 +84,11 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
+        // 1. Aplica a regra de redirecionamento para Doações
+        if ($event->tipo === 'doacao') {
+            return redirect()->route('itens.index', $event);
+        }
+
         $event->load(['convidados' => function($query) {
             $query->orderBy('presenca', 'asc'); 
         }, 'activities' => function($query) {
@@ -205,5 +224,24 @@ class EventController extends Controller
         ];
 
         return view('events.print-lista', compact('event', 'stats'));
+    }
+
+    public function gerenciarItens($slug)
+    {
+        // 1. Busca o evento pelo slug
+        $event = Event::where('slug', $slug)->firstOrFail();
+        
+        // 2. Segurança: Só o dono acessa
+        if($event->user_id !== Auth::id()) abort(403);
+
+        // 3. O DESVIO LÓGICO:
+        // if ($event->tipo === 'doacao') {
+        //     // Se for doação, abre a tela de cadastrar itens da campanha
+        //     return view('doacao.itens', compact('event'));
+        // }
+
+        // Se for comum, abre a tela de gerenciamento de festa (show)
+        // Ou você pode redirecionar para o seu método show:
+        return redirect()->route('events.show', $event->id);
     }
 }

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between gap-4 px-1">
             <div class="flex items-center gap-3">
-                <a href="{{ route('events.show', $event) }}" class="w-8 h-8 flex shrink-0 items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 shadow-sm">
+                <a href="{{ route('dashboard', $event) }}" class="w-8 h-8 flex shrink-0 items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 shadow-sm">
                     <i class="fa-solid fa-arrow-left text-xs"></i>
                 </a>
                 <div class="min-w-0">
@@ -14,6 +14,30 @@
             </div>
         </div>
     </x-slot>
+
+    @if($event->tipo === 'doacao' && $event->public_token)
+        <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl mb-6 shadow-sm">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h4 class="text-emerald-900 font-black text-[12px] uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-share-nodes"></i> Link Público de Arrecadação
+                    </h4>
+                    <p class="text-emerald-600 text-[11px] font-bold">Compartilhe este link para receber doações sem exigência de login:</p>
+                </div>
+                
+                @php
+                    $urlPublica = route('doacao.publica', $event->public_token);
+                    $mensagemZap = "Olá! Estamos arrecadando itens para *{$event->titulo}*. Veja a lista e escolha como ajudar aqui: " . $urlPublica;
+                @endphp
+
+                <a href="https://wa.me/?text={{ urlencode($mensagemZap) }}" 
+                target="_blank"
+                class="w-full md:w-auto bg-emerald-500 text-white px-5 py-2.5 rounded-lg font-black text-[11px] uppercase tracking-widest hover:bg-emerald-600 transition flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Enviar no Grupo
+                </a>
+            </div>
+        </div>
+    @endif
 
     <div class="py-4 md:py-10">
         <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 space-y-4 md:space-y-8">
@@ -68,6 +92,12 @@
                                         </td>
                                         <td class="px-4 py-4 whitespace-nowrap text-right">
                                             <div class="flex justify-end gap-1">
+                                                {{-- BOTÃO EDITAR  --}}
+                                                <button onclick="abrirModalEdicao('{{ $item->id }}', '{{ $item->nome }}', '{{ $item->quantidade }}')" 
+                                                        class="p-2 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100 hover:bg-indigo-100 transition">
+                                                    <i class="fa-solid fa-pen text-[12px]"></i>
+                                                </button>
+                                                {{-- BOTÃO EXCLUIR  --}}
                                                 <button onclick="confirmarExclusaoItem('{{ $item->id }}', '{{ $item->nome }}')" 
                                                         class="p-2 bg-rose-50 text-rose-600 rounded-lg border border-rose-100">
                                                     <i class="fa-solid fa-trash text-[12px]"></i>
@@ -164,7 +194,7 @@
                 confirmButtonText: 'SIM, EXCLUIR',
                 cancelButtonText: 'CANCELAR',
                 reverseButtons: true,
-                customClass: { popup: 'rounded-[2.5rem]' } {{-- Mantendo o estilo que você gostou --}}
+                customClass: { popup: 'rounded-md' } {{-- Mantendo o estilo que você gostou --}}
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById('delete-item-' + id).submit();
@@ -197,8 +227,49 @@
                 text: "{{ session('success') }}",
                 showConfirmButton: false,
                 timer: 2000,
-                customClass: { popup: 'rounded-[2.5rem]' }
+                customClass: { popup: 'rounded-md' }
             });
         @endif
+
+        function abrirModalEdicao(id, nomeAtual, qtdAtual) {
+        Swal.fire({
+            title: 'Editar Item',
+            html: `
+                <input id="swal-nome" class="swal2-input" placeholder="Nome" value="${nomeAtual}">
+                <input id="swal-qtd" type="number" class="swal2-input" placeholder="Quantidade" value="${qtdAtual}">
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'SALVAR ALTERAÇÕES',
+            cancelButtonText: 'CANCELAR',
+            confirmButtonColor: '#4f46e5',
+            customClass: { popup: 'rounded-md' },
+            preConfirm: () => {
+                const nome = document.getElementById('swal-nome').value;
+                const quantidade = document.getElementById('swal-qtd').value;
+                if (!nome || !quantidade) {
+                    Swal.showValidationMessage(`Por favor, preencha todos os campos`);
+                }
+                return { nome: nome, quantidade: quantidade };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Criar um formulário dinâmico para enviar o PUT
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/itens/${id}`; // Certifique-se que sua rota de update é esta
+                
+                form.innerHTML = `
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="nome" value="${result.value.nome}">
+                    <input type="hidden" name="quantidade" value="${result.value.quantidade}">
+                `;
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
     </script>
 </x-app-layout>

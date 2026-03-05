@@ -16,6 +16,13 @@ class ItemController extends Controller
      */
     public function index(Event $event)
     {
+            // Se for doação e não tiver token, gera e salva
+        if ($event->tipo === 'doacao' && !$event->public_token) {
+            $event->update([
+                'public_token' => \Illuminate\Support\Str::random(32)
+            ]);
+        }
+
         if ($event->user_id !== Auth::id()) {
             abort(403, 'Acesso não autorizado.');
         }
@@ -146,5 +153,17 @@ class ItemController extends Controller
         return $this->belongsToMany(Convidado::class, 'convidado_item')
                     ->withPivot('quantidade_levada')
                     ->withTimestamps();
+    }
+
+    public function update(Request $request, Item $item)
+    {
+        $validated = $request->validate([
+            'nome' => 'required|string|max:255',
+            'quantidade' => 'required|integer|min:1',
+        ]);
+
+        $item->update($validated);
+
+        return back()->with('success', 'Item atualizado com sucesso!');
     }
 }

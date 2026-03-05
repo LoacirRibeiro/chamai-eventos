@@ -15,6 +15,8 @@ class Event extends Model
         'data_horario',
         'local',
         'slug',
+        'public_token',
+        'tipo'
     ];
 
     // Garante que o Laravel trate a data como um objeto Carbon automaticamente

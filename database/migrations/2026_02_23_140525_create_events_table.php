@@ -16,13 +16,15 @@ return new class extends Migration
         // Mantemos user_id para o Laravel saber automaticamente que o evento pertence a um usuário
         $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
         
-        $table->string('titulo'); // Em vez de title
-        $table->text('descricao')->nullable(); // Em vez de description
-        $table->datetime('data_horario'); // Em vez de date_time
-        $table->string('local'); // Em vez de location
-        $table->string('slug')->unique(); // Mantemos 'slug' por ser um termo técnico de URL
+        $table->string('titulo'); 
+        $table->text('descricao')->nullable(); 
+        $table->datetime('data_horario'); 
+        $table->string('local'); 
+        $table->string('tipo')->default('comum');
+        $table->string('public_token', 32)->nullable()->unique();
+        $table->string('slug')->unique(); 
         
-        $table->timestamps(); // Cria 'created_at' e 'updated_at' automaticamente
+        $table->timestamps(); 
     });
 }
 

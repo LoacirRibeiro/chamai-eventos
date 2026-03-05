@@ -96,6 +96,13 @@
                         Itens da Festa
                     </a>
 
+                    <!-- <a href="{{ route('doacao.itens', $activeEvent->slug) }}"
+                       class="flex items-center gap-3 px-5 py-3 rounded-md transition-all
+                       {{ request()->routeIs('doacao.itens') ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600' }}">
+                        <i class="fa-solid fa-images text-lg"></i>
+                        Itens para Doação
+                    </a> -->
+
                     <a href="{{ route('events.galeria', $activeEvent) }}"
                        class="flex items-center gap-3 px-5 py-3 rounded-md transition-all
                        {{ request()->routeIs('events.galeria') ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600' }}">
@@ -109,12 +116,12 @@
                         <i class="fa-solid fa-chart-line text-lg"></i>
                         Detalhes & Logs
                     </a>
-
                 </div>
                 @endif
 
                 <!-- PERFIL -->
                 <div class="pt-4">
+                    {{-- Link para a Gestão de Doações --}}
                     <a href="{{ route('profile.edit') }}"
                        class="flex items-center gap-3 px-5 py-3 rounded-md transition-all
                        {{ request()->routeIs('profile.edit') ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50 hover:text-indigo-600' }}">
@@ -122,7 +129,6 @@
                         Meu Perfil
                     </a>
                 </div>
-
             </nav>
 
             <!-- USER -->

@@ -100,11 +100,26 @@
                                 Cancelar
                             </a>
                             
-                            <button type="submit"
-                                    class="order-1 sm:order-2 w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-md font-black uppercase text-[14px] tracking-widest transition shadow-lg shadow-indigo-100 flex items-center justify-center gap-2">
+                            <!-- <button type="submit"
+                                    class="order-1 sm:order-2 w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl font-black uppercase text-[14px] tracking-widest transition shadow-lg shadow-indigo-100 flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-rocket"></i>
                                 Lançar Evento
-                            </button>
+                            </button> -->
+                            <div class="order-1 sm:order-2 flex flex-col sm:flex-row gap-3">
+                                {{-- BOTÃO DOAÇÃO --}}
+                                <button type="submit" name="tipo" value="doacao"
+                                        class="w-full sm:w-auto bg-white border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-8 py-4 rounded-md font-black uppercase text-[13px] tracking-widest transition shadow-sm flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-hand-holding-heart"></i>
+                                    Criar Doação
+                                </button>
+                                
+                                {{-- BOTÃO EVENTO PADRÃO --}}
+                                <button type="submit" name="tipo" value="comum"
+                                        class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-md font-black uppercase text-[13px] tracking-widest transition shadow-lg shadow-indigo-100 flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-rocket"></i>
+                                    Lançar Evento
+                                </button>
+                            </div>
                         </div>
 
                     </form>

@@ -92,7 +92,7 @@ class ConvidadoController extends Controller
             'telefone' => $request->telefone,
             'email' => $request->email,
             'presenca' => 'pendente',
-            'token_acesso' => Str::random(32), 
+            //'token_acesso' => Str::random(32), 
         ]);
 
         // --- REGISTRO DE ATIVIDADE (OPCIONAL) ---
@@ -151,5 +151,23 @@ class ConvidadoController extends Controller
         ]);
 
         return redirect()->route('events.show', $eventId)->with('success', 'Removido!');
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $convidado = Convidado::findOrFail($id);
+        
+        $convidado->update([
+            'presenca' => $request->presenca
+        ]);
+
+        // Registro de Atividade (Mantendo seu padrão)
+        Activity::create([
+            'event_id' => $convidado->event_id,
+            'mensagem' => "Status de {$convidado->nome} alterado para {$request->presenca}.",
+            'tipo' => 'presenca'
+        ]);
+
+        return back()->with('success', 'Status de ' . $convidado->nome . ' atualizado!');
     }
 }

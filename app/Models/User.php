@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Event::class);
     }
+
+    public function doacoes()
+    {
+        return $this->hasMany(Doacao::class);
+    }
 }

@@ -35,7 +35,13 @@ class Convidado extends Model
     public function itens(): BelongsToMany
     {
         return $this->belongsToMany(Item::class, 'convidado_item')
-            ->withPivot('quantidade_levada') // Permite acessar o campo extra da migration
+            ->withPivot('quantidade_levada')
             ->withTimestamps();
+    }
+
+    public function setTelefoneAttribute($value)
+    {
+        // Remove tudo que não for número antes de salvar no banco
+        $this->attributes['telefone'] = preg_replace('/\D/', '', $value);
     }
 }

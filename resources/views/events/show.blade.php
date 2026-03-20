@@ -90,45 +90,78 @@
                             <tbody class="divide-y divide-slate-50 bg-white">
                                 @forelse($event->convidados as $convidado)
                                     <tr class="hover:bg-slate-50/50 transition">
-                                        <td class="px-4 md:px-8 py-4 whitespace-nowrap">
-                                            <div class="flex items-center gap-2">
-                                                <div class="w-8 h-8 bg-indigo-50 text-indigo-600 rounded flex shrink-0 items-center justify-center font-black text-[14px] uppercase">
-                                                    {{ substr($convidado->nome, 0, 1) }}
-                                                </div>
-                                                <div class="min-w-0">
-                                                    <p class="font-bold text-[14px] text-slate-700 leading-tight truncate max-w-[100px] xs:max-w-none">{{ $convidado->nome }}</p>
-                                                    <p class="text-[10px] text-slate-400">{{ $convidado->telefone ?? 'S/ Tel' }}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 md:px-8 py-4 text-center whitespace-nowrap">
-                                            <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter
-                                                {{ $convidado->presenca == 'confirmado' ? 'bg-emerald-100 text-emerald-700' : ($convidado->presenca == 'recusado' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-500') }}">
-                                                {{ $convidado->presenca ?? 'Pendente' }}
-                                            </span>
-                                        </td>
-                                        <td class="px-4 md:px-8 py-4 text-right whitespace-nowrap">
-                                            <div class="flex justify-end gap-1">
-                                                {{-- WhatsApp Compacto --}}
-                                                @if($convidado->telefone)
-                                                    <a href="https://wa.me/{{ preg_replace('/\D/', '', $convidado->telefone) }}" target="_blank" class="p-2 bg-emerald-50 text-emerald-600 rounded-md border border-emerald-100">
-                                                        <i class="fa-brands fa-whatsapp text-xs"></i>
-                                                    </a>
-                                                @endif
-                                                {{-- Editar --}}
-                                                <a href="{{ route('convidados.edit', $convidado) }}" class="p-2 bg-indigo-50 text-indigo-600 rounded-md border border-indigo-100">
-                                                    <i class="fa-solid fa-pen text-xs"></i>
-                                                </a>
-                                                {{-- Excluir --}}
-                                                <button onclick="confirmarExclusao('{{ $convidado->id }}', '{{ $convidado->nome }}')" class="p-2 bg-rose-50 text-rose-600 rounded-md border border-rose-100">
-                                                    <i class="fa-solid fa-trash text-xs"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    {{-- ... empty ... --}}
-                                @endforelse
+    <td class="px-4 md:px-8 py-4 whitespace-nowrap">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-indigo-50 text-indigo-600 rounded flex shrink-0 items-center justify-center font-black text-[14px] uppercase">
+                {{ substr($convidado->nome, 0, 1) }}
+            </div>
+            <div class="min-w-0">
+                <p class="font-bold text-[14px] text-slate-700 leading-tight truncate max-w-[100px] xs:max-w-none">{{ $convidado->nome }}</p>
+                <p class="text-[10px] text-slate-400">{{ $convidado->telefone ?? 'S/ Tel' }}</p>
+            </div>
+        </div>
+    </td>
+    
+    {{-- Status clicável para abrir o SweetAlert --}}
+    <td class="px-4 md:px-8 py-4 text-center whitespace-nowrap">
+        <button onclick="escolherStatus('{{ $convidado->id }}', '{{ $convidado->nome }}')" 
+            class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter cursor-pointer hover:scale-105 transition
+            {{ $convidado->presenca == 'confirmado' ? 'bg-emerald-100 text-emerald-700' : ($convidado->presenca == 'recusado' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-500') }}">
+            {{ $convidado->presenca ?? 'Pendente' }}
+        </button>
+    </td>
+
+    <td class="px-4 md:px-8 py-4 text-right whitespace-nowrap">
+        <div class="flex justify-end gap-1">
+            {{-- WhatsApp com correção automática de prefixo --}}
+            @if($convidado->telefone)
+                @php
+                    // Garante que o número tenha o 55 (Brasil)
+                    $numeroParaZap = $convidado->telefone;
+                    if (strlen($numeroParaZap) <= 11) {
+                        $numeroParaZap = '55' . $numeroParaZap;
+                    }
+                    
+                    // Mensagem automática opcional
+                    $mensagem = urlencode("Olá " . $convidado->nome . "! Aqui está o link do seu convite para o evento " . $event->titulo . ": " . route('convite.exibir', $convidado->token_acesso));
+                @endphp
+
+                <a href="https://api.whatsapp.com/send?phone={{ $numeroParaZap }}&text={{ $mensagem }}" 
+                target="_blank" 
+                class="p-2 bg-emerald-50 text-emerald-600 rounded-md border border-emerald-100 hover:bg-emerald-100 transition shadow-sm">
+                    <i class="fa-brands fa-whatsapp text-xs"></i>
+                </a>
+            @endif
+
+            <a href="{{ route('convidados.edit', $convidado) }}" class="p-2 bg-indigo-50 text-indigo-600 rounded-md border border-indigo-100 hover:bg-indigo-100 transition">
+                <i class="fa-solid fa-pen text-xs"></i>
+            </a>
+
+            <button onclick="confirmarExclusao('{{ $convidado->id }}', '{{ $convidado->nome }}')" class="p-2 bg-rose-50 text-rose-600 rounded-md border border-rose-100 hover:bg-rose-100 transition">
+                <i class="fa-solid fa-trash text-xs"></i>
+            </button>
+
+            {{-- FORMULÁRIOS OCULTOS --}}
+            {{-- 1. Exclusão --}}
+            <form id="delete-form-{{ $convidado->id }}" action="{{ route('convidados.destroy', $convidado) }}" method="POST" class="hidden">
+                @csrf @method('DELETE')
+            </form>
+
+            {{-- 2. Status (IMPORTANTE: Garante que o SweetAlert funcione) --}}
+            <form id="status-form-{{ $convidado->id }}" action="{{ route('convidados.updateStatus', $convidado->id) }}" method="POST" class="hidden">
+                @csrf @method('PATCH')
+                <input type="hidden" name="presenca" id="status-input-{{ $convidado->id }}">
+            </form>
+        </div>
+    </td>
+</tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="px-8 py-12 text-center text-slate-400 font-medium italic bg-slate-50/30">
+                                        Nenhum convidado na lista ainda.
+                                    </td>
+                                </tr>
+                            @endforelse
                             </tbody>
                         </table>
                     </div>

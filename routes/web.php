@@ -5,6 +5,10 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\ConvidadoController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\FotoController;
+use App\Http\Controllers\DoacaoController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DoacaoItemController;
+use App\Http\Controllers\PublicDonationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,14 +24,35 @@ Route::get('/', function () {
 Route::controller(ConvidadoController::class)->group(function () {
     // Redireciona tanto /v/ quanto /convite/ para o mesmo método seguro
     Route::get('/v/{token}', 'exibirConvite')->name('convite.publico');
-    Route::get('/convite/{token}', 'exibirConvite')->name('convite.vip');
+    Route::get('/convite/{token}', [App\Http\Controllers\ConvidadoController::class, 'exibirConvite'])
+    ->name('convite.exibir');
+    //Route::get('/convite/{token}', 'exibirConvite')->name('convite.vip');
     
     // Processa a confirmação de presença e escolha de itens (se for via ConvidadoController)
     Route::post('/convite/{token}/confirmar', 'confirmar')->name('convite.confirmar');
     Route::post('/convite/item/{item_id}', 'escolherItem')->name('convite.escolherItem');
 });
 
-// Rota pública para vincular item (Caso use o ItemController para isso)
+// Rota pública: acessada pelo link do WhatsApp
+    Route::get('/doacao/{token}', [PublicDonationController::class, 'show'])
+    ->name('public.doacao.show');
+
+    Route::get('/doar/{token}', [PublicDonationController::class, 'show'])->name('public.show');
+
+// Rota para processar a escolha dos itens
+//Route::post('/doar/{token}/confirmar', [PublicDonationController::class, 'confirm'])
+//    ->name('public.doacao.confirm');
+
+Route::post('/doar/{token}/confirmar/{itemId}', [PublicDonationController::class, 'confirmSingle'])
+    ->name('public.doacao.confirm_single');
+
+Route::get('/doacao/{token}/sucesso', [PublicDonationController::class, 'success'])
+    ->name('public.doacao.success');
+
+Route::post('/doacao/{token}/confirmar-tudo', [PublicDonationController::class, 'confirmarTudo'])
+    ->name('public.doacao.confirmar_tudo');
+
+// Rota pública para vincular item 
 Route::put('/itens/{item}/vincular', [ItemController::class, 'vincularConvidado'])->name('itens.vincular');
 Route::put('/itens/{item}/desvincular', [ItemController::class, 'desvincular'])->name('itens.desvincular');
 
@@ -68,7 +93,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/eventos/{event}/convidados/novo', 'create')->name('convidados.create');
         Route::post('/eventos/{event}/convidados/salvar', 'store')->name('convidados.store');
         Route::get('/convidados/{convidado}/edit', 'edit')->name('convidados.edit');
-        Route::match(['put', 'patch'], '/convidados/{convidado}', 'update')->name('convidados.update');
+        // Rota específica para o SweetAlert de Status
+        Route::patch('/convidados/{id}/status', [App\Http\Controllers\ConvidadoController::class, 'updateStatus'])->name('convidados.updateStatus');
+
+        // Sua rota de update normal (mantenha ela)
+        Route::match(['put', 'patch'], '/convidados/{convidado}', [App\Http\Controllers\ConvidadoController::class, 'update'])->name('convidados.update');
         Route::delete('/convidados/{convidado}', 'destroy')->name('convidados.destroy');
     });
 
@@ -92,6 +121,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Imprimir lista de convidados e itens (Organizador)
     Route::get('/eventos/{event}/imprimir', [EventController::class, 'imprimirLista'])->name('events.print');
+
+    /*
+|--------------------------------------------------------------------------
+| MÓDULO DE DOAÇÕES (Novo e Isolado)
+|--------------------------------------------------------------------------
+*/
+// Rotas de Doações
+    Route::get('/doacoes/criar', [DoacaoController::class, 'create'])->name('doacoes.create');
+    Route::post('/doacoes', [DoacaoController::class, 'store'])->name('doacoes.store');
+    Route::get('/doacoes/{doacao}', [DoacaoController::class, 'show'])->name('doacoes.show');
 });
+
+Route::middleware(['auth'])->group(function () {
+    // Rotas para Itens de Doação
+    Route::post('/doacoes/{doacao}/itens', [DoacaoItemController::class, 'store'])->name('doacao_itens.store');
+    Route::delete('/doacao-itens/{item}', [DoacaoItemController::class, 'destroy'])->name('doacao_itens.destroy');
+    Route::get('/doacao-itens/{item}/editar', [DoacaoItemController::class, 'edit'])->name('doacao_itens.edit');
+    Route::put('/doacao-itens/{item}', [DoacaoItemController::class, 'update'])->name('doacao_itens.update');
+    Route::get('/doacoes/{id}/pdf', [DoacaoController::class, 'gerarPdf'])->name('doacoes.pdf');
+});
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
+
 
 require __DIR__.'/auth.php';
